@@ -1,0 +1,35 @@
+<launch>
+	<!--******************* Simulation Configuration Parameters **********************************-->
+	<!--Set number of robots to use.  1-9 robots can be selected -->
+	<arg name="number_of_robots" value = "1" />
+	
+	<!--Set robot oni-directioanl sense distance in meters -->
+	<arg name="sense_distance" value = "6.0" />
+	
+	<!--Choose Map File(Map must be in gen2_maps/maps folder).  Must also change in Stage world file -->
+	<!-- <arg name="map_yaml_file" value = "office.yaml" /> -->
+	<arg name="map_yaml_file" value = "drawn_map.yaml" />
+	<!-- <arg name="map_yaml_file" value = "test_map.yaml" /> -->
+	
+	<!--******************** END Simulation Configuration Parameters *****************************-->
+
+	<!-- Set global paramters -->
+	<param name="/use_sim_time" value="true"/>
+	<param name="/num_robots" value = "$(arg number_of_robots)" /> 	
+	<param name="/senseDist" value = "$(arg sense_distance)" /> 	
+	
+	<!-- Launch Map Server, Stage Simulator, and Global Frontier nodes.  Also Rviz -->
+	<include file="$(find tf_sim)/launch/sim_global.launch" >
+		<arg name="mapFile" value="$(arg map_yaml_file)" />
+	</include>
+	
+	<include file="$(find tf_sim)/launch/launch_$(arg number_of_robots).launch" />
+	
+<!--
+	<remap from="robot_0/base_footprint" to="robot_0/robot_0/base_footprint"/>
+	<remap from="robot_0/map" to="robot_0/robot_0/map"/>
+-->
+<!--
+	<remap to="robot_0/base_footprint" from="robot_0/robot_0/base_footprint"/>
+	<remap to="robot_0/map" from="robot_0/robot_0/map"/>-->
+</launch>
