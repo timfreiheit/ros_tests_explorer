@@ -1,31 +1,14 @@
-<launch>
-	<!--******************* Simulation Configuration Parameters **********************************-->
-	<!--Set number of robots to use.  1-9 robots can be selected -->
-	<arg name="number_of_robots" value = "2" />
-	
-	<!--Set robot oni-directioanl sense distance in meters -->
-	<arg name="sense_distance" value = "6.0" />
-	
-	<!--Choose Map File(Map must be in gen2_maps/maps folder).  Must also change in Stage world file -->
-	<!-- <arg name="map_yaml_file" value = "office.yaml" /> -->
-	<arg name="map_yaml_file" value = "drawn_map.yaml" />
-	<!-- <arg name="map_yaml_file" value = "test_map.yaml" /> -->
-	
-	<!--******************** END Simulation Configuration Parameters *****************************-->
+<!-- To make this file work on your system you must change the args of the simulation node (stage) 
+-->
 
-	<!-- Set global paramters -->
-	<param name="/use_sim_time" value="true"/>
-	<param name="/num_robots" value = "$(arg number_of_robots)" /> 	
-	<param name="/senseDist" value = "$(arg sense_distance)" /> 	
-	
-	<!-- Launch Map Server, Stage Simulator, and Global Frontier nodes.  Also Rviz -->
-	<include file="$(find tf_sim)/launch/sim_global.launch" >
-		<arg name="mapFile" value="$(arg map_yaml_file)" />
-	</include>
-	
-	<include file="$(find tf_sim)/launch/launch_$(arg number_of_robots).launch" />
-	
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_0">
+<launch>
+
+
+
+<node pkg="stage_ros" type="stageros" name="simulation" args="$(find adhoc_communication)/world/sim_world.world" />
+
+
+<node pkg="adhoc_communication" type="adhoc_communication" name="robot_0/com">
 	<param name="mac" value="00:11:00:00:00:00"/>
 	<param name="robot_name" value="robot_0"/>
 	<param name="interface" value="lo"/>
@@ -40,12 +23,12 @@
 	<param name="beacon_interval" value="100" />
 	<param name="enable_cooperative_relaying" value="true" />
 	<param name="simulation_mode" value="true"/>
-	<param name="robots_in_simulation" value="2" />
+	<param name="robots_in_simulation" value="5" />
 	<param name="sim_robot_macs" value="robot_0,00:11:00:00:00:00!robot_1,11:00:00:00:00:00!robot_2,22:00:00:00:00:00!robot_3,33:00:00:00:00:00!robot_4,44:00:00:00:00:00!" />
 	<param name="p_tx" value="1" />
 </node>
 
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_1"  >
+<node pkg="adhoc_communication" type="adhoc_communication" name="robot_1/com"  >
 	<param name="mac" value="11:00:00:00:00:00"/>
 	<param name="robot_name" value="robot_1"/>
 	<param name="interface" value="lo"/>
@@ -60,9 +43,12 @@
 	<param name="beacon_interval" value="100" />
 	<param name="enable_cooperative_relaying" value="true" />
 	<param name="simulation_mode" value="true"/>
-	<param name="robots_in_simulation" value="2" />
+	<param name="robots_in_simulation" value="5" />
 	<param name="sim_robot_macs" value="robot_0,00:11:00:00:00:00!robot_1,11:00:00:00:00:00!robot_2,22:00:00:00:00:00!robot_3,33:00:00:00:00:00!robot_4,44:00:00:00:00:00!" />
 	<param name="p_tx" value="1" />
 </node>
+
+
+
 
 </launch>

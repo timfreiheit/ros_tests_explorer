@@ -26,8 +26,8 @@
 		<param name="odom_frame" value="$(arg prefix)/odom"/>
 		<param name="map_update_interval" value="0.5"/>
 		<param name="linearUpdate" value="0.5"/>
-		<param name="maxRange" value="10"/>
-		<param name="maxUrange" value="5"/>
+		<param name="maxRange" value="110"/>
+		<param name="maxUrange" value="15"/>
 
     		<remap from="scan" to="base_scan" />
     		<remap from="base_link" to="$(arg prefix)/base_link" />
@@ -41,12 +41,12 @@
 		<arg name="output" value="screen"/>
 	</include>
 
-    	<include file="$(find explorer)/launch/exploration.launch">	
+	<include file="$(find tf_sim)/launch/exploration.launch">	
 		<arg name="use_sim_time" value="true" />
 		<arg name="robot_prefix" value="/$(arg prefix)"/>
 		<arg name="log_path" value="$(arg log_path)"/>
 		<arg name="output" value="screen"/>
-		<arg name="frontier_selection" value="0"/>
+		<arg name="frontier_selection" value="1"/>
 	</include>
 
 </launch>
