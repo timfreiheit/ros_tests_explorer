@@ -4,7 +4,7 @@
 	<arg name="prefix" default="robot_x" />
 	<arg name="num" default = "-1"/>
     	<arg name="log_path" default="./"/>
-	<arg name="sim" value="false"/>
+	<arg name="sim" value="true"/>
 	
 
 	<param name="tf_prefix" value="$(arg prefix)" />
@@ -32,8 +32,6 @@
 		<param name="maxUrange" value="15"/>
 
     		<remap from="scan" to="base_scan" />
-    		<remap from="base_link" to="$(arg prefix)/base_link" />
-    		<remap from="odom" to="$(arg prefix)/odom" />
   	</node>
 	
 	<include file="$(find map_merger)/launch/map_merger.launch">	
