@@ -20,7 +20,7 @@
   	</node>
 
 	<node pkg="tf" type="static_transform_publisher" name="odom_to_map"
-    		args="0 0  0 0 0 0  $(arg prefix)/map $(arg prefix)/odom 100" />
+    		args="0 0  0 0 0 0  map odom 100" />
 
 
   	<node pkg="gmapping" type="slam_gmapping" name="gmapping" output="screen" >
