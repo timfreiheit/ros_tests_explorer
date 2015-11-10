@@ -43,8 +43,7 @@
 	</include>
 
 	<include file="$(find tf_sim)/launch/exploration.launch">	
-		<arg name="use_sim_time" value="$(arg sim)" />
-		<arg name="robot_prefix" value=""/>
+		<arg name="use_sim_time" value="false" />
 		<arg name="log_path" value="$(arg log_path)"/>
 		<arg name="output" value="screen"/>
 		<arg name="frontier_selection" value="1"/>

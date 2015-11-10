@@ -4,13 +4,13 @@
 	<arg name="prefix" default="robot_x" />
 	<arg name="num" default = "-1"/>
     	<arg name="log_path" default="./"/>
-	<arg name="sim" value="true"/>
+	<arg name="sim" value="false"/>
 	
 
 	<param name="tf_prefix" value="$(arg prefix)" />
 	<param name="rob_num" value="$(arg num)" />
     	<param name="log_path" value="$(arg log_path)"/>
-
+<!--
 	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="log">
     		<rosparam file="$(find tf_sim)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
     		<rosparam file="$(find tf_sim)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
@@ -18,6 +18,7 @@
     		<rosparam file="$(find tf_sim)/config/global_costmap_params.yaml" command="load" />
     		<rosparam file="$(find tf_sim)/config/base_local_planner_params.yaml" command="load" />
   	</node>
+-->
 
 	<node pkg="tf" type="static_transform_publisher" name="odom_to_map"
     		args="0 0  0 0 0 0  map odom 100" />
