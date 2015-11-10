@@ -1,0 +1,53 @@
+<launch>
+	
+	
+	<arg name="prefix" default="robot_x" />
+	<arg name="num" default = "-1"/>
+    	<arg name="log_path" default="./"/>
+
+	<param name="tf_prefix" value="$(arg prefix)" />
+	<param name="rob_num" value="$(arg num)" />
+    	<param name="log_path" value="$(arg log_path)"/>
+	
+
+	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="log">
+    		<rosparam file="$(find tf_sim)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    		<rosparam file="$(find tf_sim)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    		<rosparam file="$(find tf_sim)/config/local_costmap_params.yaml" command="load" />
+    		<rosparam file="$(find tf_sim)/config/global_costmap_params.yaml" command="load" />
+    		<rosparam file="$(find tf_sim)/config/base_local_planner_params.yaml" command="load" />
+  	</node>
+
+	<node pkg="tf" type="static_transform_publisher" name="odom_to_map"
+    		args="0 0  0 0 0 0  $(arg prefix)/map $(arg prefix)/odom 100" />
+
+
+  	<node pkg="gmapping" type="slam_gmapping" name="gmapping" output="screen" >
+		<param name="base_frame" value="$(arg prefix)/base_link"/>
+		<param name="odom_frame" value="$(arg prefix)/odom"/>
+		<param name="map_update_interval" value="0.5"/>
+		<param name="linearUpdate" value="0.5"/>
+		<param name="maxRange" value="110"/>
+		<param name="maxUrange" value="15"/>
+
+    		<remap from="scan" to="base_scan" />
+    		<remap from="base_link" to="$(arg prefix)/base_link" />
+    		<remap from="odom" to="$(arg prefix)/odom" />
+  	</node>
+	
+	<include file="$(find map_merger)/launch/map_merger.launch">	
+		<arg name="use_sim_time" value="true" />
+		<arg name="robot_prefix" value="/$(arg prefix)"/>
+		<arg name="log_path" value="$(arg log_path)"/>
+		<arg name="output" value="screen"/>
+	</include>
+
+	<include file="$(find tf_sim)/launch/exploration.launch">	
+		<arg name="use_sim_time" value="true" />
+		<arg name="robot_prefix" value="/$(arg prefix)"/>
+		<arg name="log_path" value="$(arg log_path)"/>
+		<arg name="output" value="screen"/>
+		<arg name="frontier_selection" value="1"/>
+	</include>
+
+</launch>

@@ -7,7 +7,6 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <move_base_msgs/MoveBaseActionFeedback.h>
 #include <costmap_2d/costmap_2d_ros.h>
-//#include <costmap_2d/cell_data.h>
 #include <costmap_2d/costmap_2d.h>
 #include <costmap_2d/cost_values.h>
 #include <costmap_2d/costmap_2d_publisher.h>
@@ -33,8 +32,9 @@
 //#endif
 boost::mutex costmap_mutex;
 
-#define OPERATE_ON_GLOBAL_MAP true		// global or local costmap as basis for exploration
-#define OPERATE_WITH_GOAL_BACKOFF false	// navigate to a goal point which is close to (but not exactly at) selected goal (in case selected goal is too close to a wall)
+
+#define OPERATE_ON_GLOBAL_MAP true
+#define OPERATE_WITH_GOAL_BACKOFF false
 
 void sleepok(int t, ros::NodeHandle &nh)
 {
@@ -54,7 +54,6 @@ public:
         
                 nh.param("frontier_selection",frontier_selection,1); 
                 nh.param("local_costmap/width",costmap_width,0); 
-                nh.param<double>("local_costmap/resolution",costmap_resolution,0);
                 nh.param("number_unreachable_for_cluster", number_unreachable_frontiers_for_cluster,3);
                 
                 ROS_INFO("Costmap width: %d", costmap_width);
@@ -156,11 +155,11 @@ public:
 		ROS_INFO("******* Initializing Simple Navigation ******");
 		ROS_DEBUG("                                             ");
 
-		ROS_INFO("Creating global costmap ...");
+		ROS_DEBUG("Creating global costmap ...");
 		costmap2d_global = new costmap_2d::Costmap2DROS("global_costmap", tf);
-		ROS_INFO("Global costmap created ... now performing costmap -> pause");
+		ROS_DEBUG("Global costmap created ... now performing costmap -> pause");
 		costmap2d_global->pause();
-		ROS_INFO("Pausing performed");
+		ROS_DEBUG("Pausing performed");
 
 		ROS_DEBUG("                                             ");
 
@@ -212,6 +211,7 @@ public:
 			visualize_home_point();
 		}
 
+		ROS_INFO("---------- SET HOME/ GOAL POINT DONE --------");
 
 		// instantiate the planner
 		exploration = new explorationPlanner::ExplorationPlanner(robot_id, robot_prefix_empty, robot_name);
@@ -223,7 +223,6 @@ public:
                                
                 robot_home_position_x = robotPose.getOrigin().getX();
                 robot_home_position_y = robotPose.getOrigin().getY();
-		ROS_INFO("Set home point to (%lf,%lf).",robot_home_position_x,robot_home_position_y);
                
                 exploration->next_auction_position_x = robotPose.getOrigin().getX();
                 exploration->next_auction_position_y = robotPose.getOrigin().getY();
@@ -342,10 +341,6 @@ public:
                             * 3 ... Sort the last 10 entries to shortest TRAVEL PATH
                             * 4 ... Sort all cluster elements from nearest to furthest (EUCLIDEAN DISTANCE)
                             */
-                            if(frontier_selection < 0 || frontier_selection > 6)
-                            {
-                                ROS_FATAL("You selected an invalid exploration strategy. Please make sure to set it in the interval [0,6]. The current value is %d.", frontier_selection);
-                            }
                             if(frontier_selection == 2)
                             {
 
@@ -519,7 +514,7 @@ public:
                                         {
                                             cluster_element = final_goal.at(4);
                                             counter_waiting_for_clusters++;
-                                            ROS_WARN("Negotiation was not successful, try next cluster");
+                                            ROS_ERROR("Negotiation was not successful, try next cluster");
                                         }
                                         count++;
                                         /*
@@ -612,7 +607,7 @@ public:
                                     robot_str.clear();
                                     goal_determined = exploration->determine_goal(5, &final_goal, 0, cluster_element, &robot_str);
                                     
-                                    ROS_DEBUG("Cluster element: %d", cluster_element);
+                                    ROS_ERROR("Cluster element: %d", cluster_element);
                                     
                                     int cluster_vector_position = -1;
  
@@ -633,17 +628,17 @@ public:
                                             }
                                         }
                                     }
-                                    ROS_DEBUG("Cluster vector position: %d", cluster_vector_position);
+                                    ROS_ERROR("Cluster vector position: %d", cluster_vector_position);
                                     
                                     if(cluster_vector_position >= 0)
                                     {
                                         if(exploration->clusters.at(cluster_vector_position).unreachable_frontier_count >= number_unreachable_frontiers_for_cluster)
                                         {
                                             goal_determined = false;
-                                            ROS_WARN("Cluster inoperateable");
+                                            ROS_ERROR("Cluster inoperateable");
                                         }else
                                         {
-                                            ROS_WARN("Cluster operateable");
+                                            ROS_ERROR("Cluster operateable");
                                         }
                                     }
                                     
@@ -677,7 +672,7 @@ public:
                                                  * If NO goals are selected at all, iterate over the global
                                                  * map to find some goals. 
                                                  */
-                                                ROS_WARN("No goals are available at all");
+                                                ROS_ERROR("No goals are available at all");
                                                 cluster_element = -1;
                                                 break;
                                             }
@@ -767,7 +762,7 @@ public:
                         }
 			else
 			{
-				ROS_WARN("No navigation performed");				
+				ROS_ERROR("No navigation performed");				
 			}		
 			ROS_DEBUG("                                             ");
                         ROS_DEBUG("                                             ");
@@ -927,11 +922,7 @@ public:
             boost::filesystem::path boost_log_path(log_path.c_str());
             if(!boost::filesystem::exists(boost_log_path))
                 if(!boost::filesystem::create_directories(boost_log_path))
-                    // directory not created; check if it is there anyways
-                    if(!boost::filesystem::is_directory(boost_log_path))
-                        ROS_ERROR("Cannot create directory %s.", log_path.c_str());
-                    else
-                        ROS_INFO("Successfully created directory %s.", log_path.c_str());
+                    ROS_ERROR("Cannot create directory %s.", log_path.c_str());
              
         }
         
@@ -941,7 +932,7 @@ public:
             
             double exploration_time = ros_time.toSec();           
             int navigation_goals_required = counter;        
-            double exploration_travel_path = (double)exploration->exploration_travel_path_global * costmap_resolution;
+            double exploration_travel_path = (double)exploration->exploration_travel_path_global * 0.02;
             double size_global_map = map_progress_during_exploration.at(map_progress_during_exploration.size()-1).global_freespace;
                     
             double efficiency_value = (exploration_time) / (number_of_robots * navigation_goals_required);
@@ -1222,7 +1213,7 @@ public:
                                  * If NO goals are selected at all, iterate over the global
                                  * map to find some goals. 
                                  */
-                                ROS_WARN("No goals are available at all");
+                                ROS_ERROR("No goals are available at all");
                                 cluster_element = -1;
                                 break;
                             }
@@ -1378,7 +1369,7 @@ public:
                                     }
                                     else if(backoff_sucessfull == false)
                                     {
-                                        ROS_WARN("Navigation to global costmap back-off goal not possible"); 
+                                        ROS_ERROR("Navigation to global costmap back-off goal not possible"); 
                                         ROS_INFO("Storing as unreachable...");
                                         exploration->storeUnreachableFrontier(global_goal.at(0),global_goal.at(1),global_goal.at(2), robot_str.at(0), global_goal.at(3));
                                         ROS_INFO("Stored unreachable frontier");
@@ -1596,13 +1587,13 @@ public:
         
         std::vector<int> clusters_available_in_pool;
         
-        int home_position_x, home_position_y;
+	int home_position_x, home_position_y;
         int robot_id, number_of_robots;
         int frontier_selection, costmap_width, global_costmap_iteration, number_unreachable_frontiers_for_cluster;
         int counter_waiting_for_clusters;
         
-        double robot_home_position_x, robot_home_position_y, costmap_resolution;
-        bool Simulation, goal_determined;
+        double robot_home_position_x, robot_home_position_y;
+	bool Simulation, goal_determined;
         bool robot_prefix_empty;
         int accessing_cluster, cluster_element_size, cluster_element;
         int global_iterattions;

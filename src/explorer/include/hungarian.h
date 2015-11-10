@@ -19,11 +19,12 @@
  **
  ********************************************************************
  ********************************************************************/
-#ifndef HUNGARIAN_H
-#define HUNGARIAN_H
 
 #include <iostream>
 #include <vector>
+
+#ifndef HUNGARIAN_H
+#define HUNGARIAN_H
 
 using std::vector;
 
