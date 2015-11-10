@@ -48,10 +48,11 @@
     <!-- REAL HARDWARE -->
     <include unless="$(arg use_sim_time)" file="$(find explorer)/launch/simple_navigation_prerequisites_hydro_$(env ROBOT_PLATFORM).launch">
 	<arg name="log_path" value="$(arg log_path)" />
+	<arg name="log_path" value="$(arg log_path)" />
 	
 <!--Edit Peter: output is not used in Pioneer launch file <arg name="output" value="$(arg output)" /> -->
     </include>
-    <include unless="$(arg use_sim_time)" file="$(find explorer)/launch/simple_navigation_$(env ROBOT_PLATFORM).launch">
+    <include unless="$(arg use_sim_time)" file="$(find explorer)/launch/simple_navigation_turlebot.launch">
 	<arg name="frontier_selection" value="$(arg frontier_selection)" />
 	<arg name="log_path" value="$(arg log_path)" />
     </include>
