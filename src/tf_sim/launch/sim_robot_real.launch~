@@ -42,8 +42,7 @@
 		<arg name="output" value="screen"/>
 	</include>
 
-	<include file="$(find tf_sim)/launch/exploration.launch">	
-		<arg name="use_sim_time" value="false" />
+	<include file="$(find explorer)/launch/exploration.launch">
 		<arg name="log_path" value="$(arg log_path)"/>
 		<arg name="output" value="screen"/>
 		<arg name="frontier_selection" value="1"/>

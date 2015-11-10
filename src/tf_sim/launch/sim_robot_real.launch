@@ -1,6 +1,8 @@
 <launch>
 	
-	
+	<env name="ROSCONSOLE_CONFIG_FILE" 
+	       value="$(find tf_sim)/log_all_rosconsole.conf"/>
+
 	<arg name="prefix" default="robot_x" />
 	<arg name="num" default = "-1"/>
     	<arg name="log_path" default="./"/>
