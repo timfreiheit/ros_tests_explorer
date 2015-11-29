@@ -34,7 +34,7 @@
     		<remap from="odom" to="$(arg prefix)/odom" />
   	</node>
 	
-	<include file="$(find map_merger)/launch/map_merger.launch">	
+	<include file="$(find tf_sim)/launch/map_merger.launch">	
 		<arg name="use_sim_time" value="true" />
 		<arg name="robot_prefix" value="/$(arg prefix)"/>
 		<arg name="log_path" value="$(arg log_path)"/>

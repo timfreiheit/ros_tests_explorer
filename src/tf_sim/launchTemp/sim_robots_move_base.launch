@@ -23,9 +23,9 @@
 		<arg name="mapFile" value="$(arg map_yaml_file)" />
 	</include>
 	
-	<include file="$(find tf_sim)/launch/launch_$(arg number_of_robots).launch" />
+	<!--
 	
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_0">
+<node pkg="adhoc_communication" type="adhoc_communication" name="robot_0" output="screen">
 	<param name="mac" value="00:11:00:00:00:00"/>
 	<param name="robot_name" value="robot_0"/>
 	<param name="interface" value="lo"/>
@@ -45,7 +45,7 @@
 	<param name="p_tx" value="1" />
 </node>
 
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_1"  >
+<node pkg="adhoc_communication" type="adhoc_communication" name="robot_1"  output="screen">
 	<param name="mac" value="11:00:00:00:00:00"/>
 	<param name="robot_name" value="robot_1"/>
 	<param name="interface" value="lo"/>
@@ -64,5 +64,8 @@
 	<param name="sim_robot_macs" value="robot_0,00:11:00:00:00:00!robot_1,11:00:00:00:00:00!robot_2,22:00:00:00:00:00!robot_3,33:00:00:00:00:00!robot_4,44:00:00:00:00:00!" />
 	<param name="p_tx" value="1" />
 </node>
+-->
+	<include file="$(find tf_sim)/launch/launch_$(arg number_of_robots).launch" />
+	
 
 </launch>
