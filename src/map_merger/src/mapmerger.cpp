@@ -211,7 +211,7 @@ void MapMerger::waitForRobotInformation()
 
 void MapMerger::callback_got_robot_for_data(const std_msgs::StringConstPtr &msg)
 {
-    ROS_INFO("Using %s as pseudo local map",msg.get()->data.c_str());
+    ROS_ERROR("[MapMerger]: Using %s as pseudo local map",msg.get()->data.c_str());
     this->robot_name = msg.get()->data;
 }
 void MapMerger::callback_new_robot(const std_msgs::StringConstPtr &msg)
@@ -238,7 +238,7 @@ void MapMerger::callback_new_robot(const std_msgs::StringConstPtr &msg)
         }
     }
     robots->push_back(newRobotName);
-    ROS_INFO("New robot:%s",newRobotName.c_str());
+    ROS_ERROR("[MapMerger]: New robot:%s",newRobotName.c_str());
     updateMan->addNewUpdateList();
     makeEmptyMapData(newRobotName,map_height,map_width,local_map->info.resolution);
     ROS_INFO("asking %s for map in new Robot",newRobotName.c_str());
@@ -260,7 +260,7 @@ void MapMerger::callback_remove_robot(const std_msgs::StringConstPtr &msg)
 
 void MapMerger::callback_control(const adhoc_communication::MmControlConstPtr &msg)
 {
-    ROS_DEBUG("Got a control message");
+    ROS_ERROR("[MapMerger]: Got a control message");
     adhoc_communication::MmControl tmp = *msg.get();
     if(tmp.update_numbers.size() == 0)
     {
@@ -608,10 +608,14 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
     std::vector<int> * containedUpdates = new std::vector<int>();
     containedUpdates->push_back(update_seq);
     //todo:mc_ROBOT
-   /* for(int i = 0; i < robots->size(); i++)
+
+    // send map to all known robots
+    for(int i = 0; i < robots->size(); i++) {
         sendMapOverNetwork(robots->at(i),containedUpdates,min_x,min_y,max_x,max_y);
-*/
+    }
     sendMapOverNetwork("mc_" + robot_name,containedUpdates,min_x,min_y,max_x,max_y);
+    
+    //sendMapOverNetwork(robot_name,containedUpdates,min_x,min_y,max_x,max_y);
     delete containedUpdates;
     //sendMapOverNetwork("",min_x,min_y,max_x,max_y);
     //send_map_over_network("");
@@ -839,7 +843,7 @@ void MapMerger::callback_map_other(const adhoc_communication::MmMapUpdateConstPt
     nav_msgs::OccupancyGrid tmp =  msg.get()->map;
     nav_msgs::OccupancyGrid * toInsert = &tmp;
     int index_robots = -1;
-    ROS_DEBUG("Got map from %s",msg.get()->src_robot.c_str());
+    ROS_ERROR("[MapMerger]: Got map from %s",msg.get()->src_robot.c_str());
     std::string src_robot = msg.get()->src_robot;
     if(has_local_map == false)
     {
@@ -889,7 +893,7 @@ void MapMerger::callback_map_other(const adhoc_communication::MmMapUpdateConstPt
     }
     if(index_robots == -1)
     {
-        ROS_WARN("Got map with a not valid frame_id:%s| index_robot == -1| size of data:%lu",toInsert->header.frame_id.c_str(),toInsert->data.size());
+        ROS_ERROR("[MapMerger]: Got map with a not valid frame_id:%s| index_robot == -1| size of data:%lu",toInsert->header.frame_id.c_str(),toInsert->data.size());
         return;
     }
     else
@@ -897,7 +901,7 @@ void MapMerger::callback_map_other(const adhoc_communication::MmMapUpdateConstPt
         if(new_data_maps->size() < index_robots)
             return;
         new_data_maps->at(index_robots) = true;
-        ROS_DEBUG("GOT NOT LOCAL MAP,Process it, data size:%lu",toInsert->data.size());
+        ROS_ERROR("[MapMerger]: GOT NOT LOCAL MAP,Process it, data size:%lu",toInsert->data.size());
 
         if(map_data->size() < index_robots+1)
         {
@@ -905,22 +909,22 @@ void MapMerger::callback_map_other(const adhoc_communication::MmMapUpdateConstPt
             return;
         }
         updateMapArea(index_robots,toInsert);
-        ROS_DEBUG("Adding new list entry");
+        ROS_ERROR("[MapMerger]: Adding new list entry");
         updateMan->addToupdateList(index_robots,msg.get()->update_numbers);
         if(updateMan->isUpdatesMissing(index_robots))
         {
-            ROS_DEBUG("Missed some updates for %s",robots->at(index_robots).c_str());
+            ROS_ERROR("[MapMerger]: Missed some updates for %s",robots->at(index_robots).c_str());
             std::vector<int>* listOfMissedUpdates = updateMan->getMissingUpdateOfRobot(index_robots);
             if(listOfMissedUpdates->size() == 0)
             {
-                ROS_WARN("Something is Wrong with the missing updates");
+                ROS_ERROR("[MapMerger]: Something is Wrong with the missing updates");
                 delete listOfMissedUpdates;
                 return;
             }
-            ROS_DEBUG("%lu updates are missing,asking for them",listOfMissedUpdates->size());
+            ROS_ERROR("[MapMerger]: %lu updates are missing,asking for them",listOfMissedUpdates->size());
             for(int i = 0; i < listOfMissedUpdates->size(); i++)
             {
-                ROS_WARN("Miss: %i",listOfMissedUpdates->at(i));
+                ROS_ERROR("[MapMerger]: Miss: %i",listOfMissedUpdates->at(i));
             }
             sendControlMessage(listOfMissedUpdates,robots->at(index_robots));
             delete listOfMissedUpdates;
@@ -1033,27 +1037,29 @@ void MapMerger::processMap(nav_msgs::OccupancyGrid *map,int index_in_mapdata)
     return;
 }
 
-void MapMerger::processPosition(geometry_msgs::PoseStamped * pose)
-{
-    //ros::nodeHandle nodeHandle ("~");
-    //broadcast to all with map and set frame ID to mine
-    ros::ServiceClient client = nodeHandle->serviceClient<adhoc_communication::SendMmRobotPosition>
+void MapMerger::processPosition(geometry_msgs::PoseStamped * pose) {
+
+    for(int i = 0; i < robots->size(); i++) {
+        ros::ServiceClient client = nodeHandle->serviceClient<adhoc_communication::SendMmRobotPosition>
             (robot_prefix + "/adhoc_communication/send_position");
     adhoc_communication::SendMmRobotPosition exchange;
     exchange.request.topic = position_other_robots_topic;
-    exchange.request.dst_robot = "mc_"+robot_name;
+    exchange.request.dst_robot = robots->at(i);
     exchange.request.position.position.pose = pose->pose;
     exchange.request.position.src_robot = robot_name;
     //exchange. = robot_name;
-    if(client.call(exchange))
-        {
-            if(exchange.response.status)
-                ROS_DEBUG("Could  send position");
-            else
-                ROS_WARN("Problem sending position");
+    ROS_ERROR("[MapMerger]: Send position");
+    if(client.call(exchange)){
+        if(exchange.response.status) {
+            ROS_DEBUG("Could  send position");
+        } else {
+            ROS_WARN("Problem sending position");
         }
-        else
-            ROS_DEBUG("Could not call service to send position");
+    } else {
+        ROS_DEBUG("Could not call service to send position");
+    }
+    }
+    //processPosition(pose, "mc_"+robot_name);
 }
 
 void MapMerger::start()
@@ -1176,7 +1182,13 @@ void MapMerger::mergeMaps(nav_msgs::OccupancyGrid *mapToMerge, int min_x, int mi
                     global_map->data[index_global_map] = mapToMerge->data[index_map_to_merge];
          }
     }
-     ROS_DEBUG("Merged maps succesfully");
+     ROS_ERROR("[MapMerger] Merged maps succesfully");
+    
+    /*for(int i = 0; i < robots->size(); i++) {
+        std::vector<int> ints;
+        sendBackAskedMapData(robots -> at(i), ints);
+    }*/
+
 }
 
 cv::Mat MapMerger::mapToMat(const nav_msgs::OccupancyGrid *map)
@@ -1532,14 +1544,14 @@ void MapMerger::sendMapOverNetwork(string destination, std::vector<int>* contain
       std::string service = robot_prefix + "/adhoc_communication/send_map_update";
      if(end_row == -1 || end_collum == -1)
     {
-        ROS_DEBUG("Send whole map");
+        ROS_ERROR("Send whole map");
         end_row = map_height;
         end_collum = map_width;
         start_row = 0;
         start_collum = 0;
         isWholeMap = true;
     }
-        ROS_DEBUG("Send map using:%s \n\t\t\t\t the normal way min_x:%i|max_x:%i|min_y:%i|max_y:%i",service.c_str(),start_row,end_row,start_collum,end_collum);
+        ROS_ERROR("Send map using:%s \n\t\t\t\t the normal way min_x:%i|max_x:%i|min_y:%i|max_y:%i",service.c_str(),start_row,end_row,start_collum,end_collum);
         /**
           todo:
           values for the mapPart are used wrong, always creates one great map part if i just send 688 x 688 packets,
@@ -1580,21 +1592,21 @@ void MapMerger::sendMapOverNetwork(string destination, std::vector<int>* contain
                 exchange.request.map_update.update_numbers = *containedUpdates;
                 std::string hostname = destination;
                 exchange.request.dst_robot = destination;
-                ROS_DEBUG("Send Map to %s(if nothing -> boradcast) ,frame id:%s| topic:[%s]|data<_size:%lu",
+                ROS_ERROR("[MapMerger]: Send Map to %s(if nothing -> boradcast) ,frame id:%s| topic:[%s]|data<_size:%lu",
                           destination.c_str(),t->header.frame_id.c_str(),
                           topic_over_network.c_str(), exchange.request.map_update.map.data.size());
                 if(client.call(exchange))
                 {
                     if(exchange.response.status)
                         if(destination == "")
-                            ROS_DEBUG("Sended Map to:all,topic:%s|r:%i;c:%i",exchange.request.topic.c_str(),row,collum);
+                            ROS_ERROR("[MapMerger]: Sended Map to:all,topic:%s|r:%i;c:%i",exchange.request.topic.c_str(),row,collum);
                     else
-                        ROS_DEBUG("Sended Map to:%s,topic:%s|r:%i;c:%i",exchange.request.dst_robot.c_str(),exchange.request.topic.c_str(),row,collum);
+                        ROS_ERROR("[MapMerger]: Sended Map to:%s,topic:%s|r:%i;c:%i",exchange.request.dst_robot.c_str(),exchange.request.topic.c_str(),row,collum);
                     else
-                        ROS_WARN("Destination host unreachable [%s](if nothing -> boradcast)",hostname.c_str());
+                        ROS_ERROR("[MapMerger]: Destination host unreachable [%s](if nothing -> boradcast)",hostname.c_str());
                 }
                 else
-                    ROS_DEBUG("Could not call service to send map");
+                    ROS_ERROR("[MapMerger]:Could not call service to send map");
             }
         }
 }
@@ -1865,6 +1877,7 @@ void MapMerger::sendBackAskedMapData(string robotName, std::vector<int> missingU
     int max_x = 0;
     int min_y = map_height;
     int max_y = 0;
+
     for(int i = 0; i < missingUpdates.size()  ;i++)
     {
         UpdateEntry * tmp = update_list->at(missingUpdates.at(i));
@@ -1895,12 +1908,12 @@ void MapMerger::sendControlMessage(std::vector<int>* updateNumbers,std::string d
     if(client.call(exchange))
         {
             if(exchange.response.status)
-                ROS_DEBUG("Could  send control message");
+                ROS_ERROR("[MapMerger]: Could  send control message");
             else
-                ROS_WARN("Problem sending control message to %s",dest.c_str());
+                ROS_ERROR("[MapMerger]: Problem sending control message to %s",dest.c_str());
         }
         else
-            ROS_DEBUG("Could not call service to send control message");
+            ROS_ERROR("[MapMerger]: Could not call service to send control message");
 }
 bool MapMerger::getHasLocalMap()
 {
