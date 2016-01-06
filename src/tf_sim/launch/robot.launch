@@ -52,6 +52,22 @@
         <arg name="robot_prefix" value="$(arg robot_prefix)" />
         <arg name="output" value="log" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
+        
+        <!-- 
+         ********* EXPLORATION STRATEGY ************
+         * 0 ... Navigate to nearest frontier TRAVEL PATH
+         * 1 ... Navigate using auctioning with cluster selection using 
+         *       NEAREST selection (Kuhn-Munkres)
+         * 2 ... Navigate to furthest frontier
+         * 3 ... Navigate to nearest frontier EUCLIDEAN DISTANCE
+         * 4 ... Navigate to random Frontier
+         * 5 ... Cluster frontiers, then navigate to nearest cluster 
+         *       using EUCLIDEAN DISTANCE (with and without
+         *       negotiation)
+         * 6 ... Cluster frontiers, then navigate to random cluster
+         *       (with and without negotiation)
+         -->
+
         <arg name="frontier_selection" value="6" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
     </include>
