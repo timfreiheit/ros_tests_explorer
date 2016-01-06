@@ -10,6 +10,10 @@ Panels:
         - /TF1
         - /TF1/Frames1
         - /LaserScan1
+        - /Pose1
+        - /Frontiers1
+        - /Positions_01
+        - /Positions_01/Status1
       Splitter Ratio: 0.5
     Tree Height: 469
   - Class: rviz/Selection
@@ -84,12 +88,11 @@ Visualization Manager:
       Show Names: false
       Tree:
         robot_0/map:
-          {}
-        robot_0/odom:
-          robot_0/base_footprint:
-            robot_0/base_link:
-              robot_0/base_laser_link:
-                {}
+          robot_0/odom:
+            robot_0/base_footprint:
+              robot_0/base_link:
+                robot_0/base_laser_link:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -153,6 +156,44 @@ Visualization Manager:
       Name: Map
       Topic: /robot_1/map_merger/global_map
       Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.1
+      Class: rviz/Pose
+      Color: 16; 8; 255
+      Enabled: true
+      Head Length: 0.3
+      Head Radius: 0.1
+      Name: Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05
+      Shape: Arrow
+      Topic: /robot_0/move_base/current_goal
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /robot_0/frontierPoints
+      Name: Frontiers
+      Namespaces:
+        my_namespace: true
+      Queue Size: 1
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /robot_0/map_merger/position_robot_0
+      Name: Positions_0
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /robot_0/map_merger/position_robot_1
+      Name: Positions_1
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -177,22 +218,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 67.7498
+      Distance: 63.7854
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 18.1338
-        Y: 4.92953
-        Z: 9.93621
+        X: 10.4211
+        Y: -8.12434
+        Z: 0.00361061
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.2598
+      Pitch: 1.1148
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.29541
+      Yaw: 5.49991
     Saved: ~
 Window Geometry:
   Displays:
@@ -210,5 +251,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1276
-  X: 2349
-  Y: 190
+  X: 117
+  Y: 227
