@@ -741,7 +741,9 @@ bool sendPacket(std::string &hostname_destination, std::string& payload, uint8_t
      * multicast: an entry for hostname_destination is in mc_handler, i.e., this host joined the mc_group hostname_destination
      * unicast: otherwise
      */
-    bool bcast = (hostname_destination.compare("") == 0); /// is broadcast
+    bool bcast = (hostname_destination.compare("") == 0); /// is 
+    std::string t("mc_");
+    bcast = hostname_destination.compare(0, t.length(), t) == 0;
     bool send_successfully;
     bool mc_frame = false; /// is multicast
     routing_entry route;
