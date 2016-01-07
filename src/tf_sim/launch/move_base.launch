@@ -33,4 +33,5 @@
 -->
         <remap from="$(arg robot_pref)$(arg robot_pref)/map" to="$(arg robot_pref)/map" />
     </node>
+
 </launch>
