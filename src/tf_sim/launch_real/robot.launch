@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 	
-    <arg name="use_sim_time" default="true" />
+    <arg name="use_sim_time" default="false" />
     <arg name="robot_name" default="robot_x"/>
     <arg name="interface" default="wlan0" />
 
@@ -85,35 +85,36 @@
   <include file="$(find turtlebot_navigation)/launch/includes/velocity_smoother.launch.xml"/>
   <include file="$(find turtlebot_navigation)/launch/includes/safety_controller.launch.xml"/>
 
-  <arg name="odom_topic" default="odom" />
+    <arg name="odom_topic" default="odom" />
+
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+       
+        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find turtlebot_navigation)/param/base_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
 
 
+        <param name="global_costmap/map_topic" value="map_merger/global_map" />
+        <param name="local_costmap/observation_sources" value="scan" />
+        <param name="local_costmap/scan/topic" value="base_scan" />
+        <param name="local_costmap/scan/data_type" value="LaserScan" />
+        <param name="local_costmap/map_topic" value="map_merger/global_map" />
 
-
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-   
-    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find turtlebot_navigation)/param/base_local_planner_params.yaml" command="load" />
-
-<!--   
-    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find explorer)/param/turtlebot_local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find explorer)/param/turtlebot_global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find explorer)/param/base_local_planner_params.yaml" command="load" />
--->
-    <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
-
-    <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
-    <remap from="odom" to="$(arg odom_topic)"/>
+        <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
+        <remap from="odom" to="$(arg odom_topic)"/>
 
 <!--    <remap from="cmd_vel" to="cmd_vel_mux/input/navi_raw"/> -->
-  </node>
+    </node>
   
-  <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
+    <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
+        <arg name="robot_name" value="$(arg robot_name)" />
+        <arg name="robot_local_map_frame" value="map" />
+        <arg name="output" value="log" />
+        <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
     </include>

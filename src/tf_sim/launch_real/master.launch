@@ -23,9 +23,9 @@
         <remap from="base" to="/odom"/>
         <remap from="scan" to="/scan"/>
         <remap from="base_footprint" to="/base_footprint"/>
+        <remap from="/adhoc_communication/send_frontier" to="adhoc_communication/send_frontier"/>
 
         <include file="$(find tf_sim)/launch_real/robot.launch" >
-            /robot/odom
             <arg name="robot_name" value="robot_0"/>
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="02:01:00:00:00:00" />
