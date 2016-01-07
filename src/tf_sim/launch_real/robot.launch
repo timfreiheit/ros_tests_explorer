@@ -120,6 +120,9 @@
         <param name="seconds_recompute_transform" value="25" />
     </include>
 
+    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />
+    
     <include file="$(find explorer)/launch/simple_navigation_turtlebot.launch">
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
@@ -138,6 +141,8 @@
          *       (with and without negotiation)
          -->
 
+        <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />
         <arg name="frontier_selection" value="4" />
     </include>
 
