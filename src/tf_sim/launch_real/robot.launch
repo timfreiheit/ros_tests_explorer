@@ -43,7 +43,11 @@
         <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
     </include>
-    <include file="$(find explorer)/launch/simple_navigation_turtlebot.launch">
+
+    <include file="$(find explorer)/launch/exploration.launch">
+        <arg name="robot_name" value="$(arg robot_name)" />
+        <arg name="robot_prefix" value="" />        
+        <arg name="output" value="log" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
         <!-- 
