@@ -44,7 +44,6 @@
         <param name="seconds_recompute_transform" value="25" />
     </include>
     <include file="$(find explorer)/launch/simple_navigation_turtlebot.launch">
-        <arg name="output" value="log" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
         <!-- 
