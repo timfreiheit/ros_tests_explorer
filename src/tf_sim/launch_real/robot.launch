@@ -41,7 +41,7 @@
   <!-- ********** START THE GMAPPING NODE ********** -->
   <!-- ******************************************************************************* -->
 
-  <arg name="scan_topic" default="scan" />
+  <arg name="scan_topic" default="/scan" />
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
 
     <param name="base_frame" value="base_footprint"/>
@@ -122,7 +122,7 @@
 
     <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />
-    
+
     <include file="$(find explorer)/launch/simple_navigation_turtlebot.launch">
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
