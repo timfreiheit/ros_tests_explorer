@@ -29,6 +29,6 @@
         <remap from="base" to="/odom"/>
         <remap from="scan" to="/scan"/>
         <remap from="base_footprint" to="/base_footprint"/>
-    </group/>
+    </group>
 
 </launch>
