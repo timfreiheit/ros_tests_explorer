@@ -5,6 +5,15 @@
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 
     <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+    <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
+        <arg name="rgb_processing" value="false" />
+        <arg name="depth_registration" value="false" />
+        <arg name="depth_processing" value="false" />
+
+        <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
+             Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 -->
+        <arg name="scan_topic" value="/scan" />
+    </include>
 
     <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00"/>
 
