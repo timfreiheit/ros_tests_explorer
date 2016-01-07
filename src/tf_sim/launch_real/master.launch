@@ -20,6 +20,7 @@
     <group ns="robot">
         <remap from="odom" to="/odom"/>
         <remap from="map" to="/map"/>
+        <remap from="map_metadata" to="/map_metadata"/>
         <remap from="base" to="/odom"/>
         <remap from="scan" to="/scan"/>
         <remap from="base_footprint" to="/base_footprint"/>
