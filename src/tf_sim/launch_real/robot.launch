@@ -19,11 +19,12 @@
         <arg name="mac" value="$(arg mac)" />
         <arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />
     </include>
+    <!--
     <include file="$(find tf_sim)/launch_real/move_base.launch">
         <arg name="robot" value="$(arg robot_name" />
         <arg name="output" value="log" />
-    </include>
-    <include file="$(find tf_sim)/launch_real/mapping.launch">
+    </include>-->
+    <!--<include file="$(find tf_sim)/launch_real/mapping.launch">
         <arg name="robot" value="$(arg robot_name)" />
 	    <arg name="robot_local_map_frame" value="map" />
         <arg name="output" value="log" />
@@ -33,7 +34,7 @@
         <arg name="xmin" value="-35" />
         <arg name="ymax" value="35" />
         <arg name="ymin" value="-35" />
-    </include>
+    </include>-->
     <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
         <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="robot_local_map_frame" value="map" />
@@ -44,10 +45,7 @@
         <param name="seconds_recompute_transform" value="25" />
     </include>
 
-    <include file="$(find explorer)/launch/exploration.launch">
-        <arg name="robot_name" value="$(arg robot_name)" />
-        <arg name="robot_prefix" value="" />        
-        <arg name="output" value="log" />
+    <include file="$(find explorer)/launch/simple_navigation_turtlebot.launch">
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
         <!-- 
@@ -67,4 +65,81 @@
 
         <arg name="frontier_selection" value="4" />
     </include>
+
+     <!-- ******************************************************************************* -->
+  <!-- ********** START THE GMAPPING NODE ********** -->
+  <!-- ******************************************************************************* -->
+
+  <arg name="scan_topic" default="scan" />
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+
+    <param name="base_frame" value="base_footprint"/>
+
+    <param name="odom_frame" value="odom"/>
+    <param name="map_update_interval" value="1.0"/>
+    <param name="maxUrange" value="3.9"/>
+    <param name="maxRange" value="15.0"/>
+    <param name="sigma" value="0.01"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.01"/>
+    <param name="astep" value="0.01"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+    <param name="linearUpdate" value="0.05"/>
+    <param name="angularUpdate" value="0.05"/>
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="10"/>
+  
+    <param name="xmin" value="-75.0"/>
+    <param name="ymin" value="-75.0"/>
+    <param name="xmax" value="75.0"/>
+    <param name="ymax" value="75.0"/>
+
+    <param name="delta" value="0.02"/>
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+
+  <!-- ******************************************************************************* -->
+  <!-- ********** START MOVE BASE ********** -->
+  <!-- ******************************************************************************* -->
+  <include file="$(find turtlebot_navigation)/launch/includes/velocity_smoother.launch.xml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/safety_controller.launch.xml"/>
+
+  <arg name="odom_topic" default="odom" />
+
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+   
+    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/base_local_planner_params.yaml" command="load" />
+
+<!--   
+    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find explorer)/param/turtlebot_local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find explorer)/param/turtlebot_global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find explorer)/param/base_local_planner_params.yaml" command="load" />
+-->
+    <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
+
+    <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+
+<!--    <remap from="cmd_vel" to="cmd_vel_mux/input/navi_raw"/> -->
+  </node>
+  
 </launch>
