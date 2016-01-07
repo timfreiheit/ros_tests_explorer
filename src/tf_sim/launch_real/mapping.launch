@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="robot" />
-    <arg name="robot_local_map_frame" />
+    <arg name="robot" default=""/>
+    <arg name="robot_local_map_frame" default="" />
     <arg name="log_path" />
     <arg name="use_sim_time" default="true" />
     <arg name="output" default="log" />
