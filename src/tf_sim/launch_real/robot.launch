@@ -20,12 +20,12 @@
         <arg name="mac" value="$(arg mac)" />
         <arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />
     </include>
-    <include file="$(find tf_sim)/launch/move_base.launch">
+    <include file="$(find tf_sim)/launch_real/move_base.launch">
         <arg name="robot" value="$(arg robot_name" />
         <arg name="robot_pref" value="$(arg robot_prefix)" />
         <arg name="output" value="log" />
     </include>
-    <include file="$(find tf_sim)/launch/mapping.launch">
+    <include file="$(find tf_sim)/launch_real/mapping.launch">
         <arg name="robot" value="$(arg robot_name)" />
         <arg name="robot_prefix" value="$(arg robot_prefix)" />
 	    <arg name="robot_local_map_frame" value="$(arg robot_name)/map" />
