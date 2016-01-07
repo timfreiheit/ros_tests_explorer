@@ -3,7 +3,6 @@
 	
     <arg name="use_sim_time" default="true" />
     <arg name="robot_name" default="robot_x"/>
-    <arg name="robot_prefix" default="/robot_x" />
     <arg name="interface" default="wlan0" />
 
     <arg name="mac" default="02:01:00:00:00:00" />
@@ -14,7 +13,7 @@
 	<include file="$(find adhoc_communication)/launch/adhoc_communication.launch">
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
         <arg name="robot_name" value="$(arg robot_name)" />
-	    <arg name="robot_prefix" value="$(arg robot_prefix)" />
+	    <!--<arg name="robot_prefix" value="$(arg robot_prefix)" />-->
         <arg name="interface" value="$(arg interface)" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <arg name="mac" value="$(arg mac)" />
@@ -22,12 +21,10 @@
     </include>
     <include file="$(find tf_sim)/launch_real/move_base.launch">
         <arg name="robot" value="$(arg robot_name" />
-        <arg name="robot_pref" value="$(arg robot_prefix)" />
         <arg name="output" value="log" />
     </include>
     <include file="$(find tf_sim)/launch_real/mapping.launch">
         <arg name="robot" value="$(arg robot_name)" />
-        <arg name="robot_prefix" value="$(arg robot_prefix)" />
 	    <arg name="robot_local_map_frame" value="$(arg robot_name)/map" />
         <arg name="output" value="log" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
@@ -39,7 +36,6 @@
     </include>
     <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
         <arg name="robot_name" value="$(arg robot_name)" />
-        <arg name="robot_prefix" value="$(arg robot_prefix)" />
         <arg name="robot_local_map_frame" value="$(arg robot_name)/map" />
         <arg name="output" value="log" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
@@ -47,9 +43,9 @@
         <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
     </include>
-    <include file="$(find explorer)/launch/exploration.launch">
+    <include file="$(find explorer)/launch/simple_navigation_turtlebot.launch">
 	    <arg name="robot_name" value="$(arg robot_name)" />
-        <arg name="robot_prefix" value="$(arg robot_prefix)" />
+        <arg name="robot_prefix" value="" />
         <arg name="output" value="log" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
