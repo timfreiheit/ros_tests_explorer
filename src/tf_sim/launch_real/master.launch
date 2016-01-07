@@ -23,13 +23,12 @@
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="02:01:00:00:00:00" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
-
-            <remap from="odom" to="/odom"/>
-            <remap from="map" to="/map"/>
-            <remap from="base" to="/odom"/>
-            <remap from="scan" to="/scan"/>
-            <remap from="base_footprint" to="/base_footprint"/>
         </include>
-    </group>
+        <remap from="odom" to="/odom"/>
+        <remap from="map" to="/map"/>
+        <remap from="base" to="/odom"/>
+        <remap from="scan" to="/scan"/>
+        <remap from="base_footprint" to="/base_footprint"/>
+    </group/>
 
 </launch>
