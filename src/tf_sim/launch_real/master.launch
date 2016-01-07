@@ -18,17 +18,19 @@
     <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00"/>
 
     <group ns="robot">
-        <include file="$(find tf_sim)/launch_real/robot.launch" >
-            <arg name="robot_name" value="robot_0"/>
-            <args name="use_sim_time" value="$(arg use_sim_time)"/>
-            <arg name="mac" default="02:01:00:00:00:00" />
-            <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
-        </include>
         <remap from="odom" to="/odom"/>
         <remap from="map" to="/map"/>
         <remap from="base" to="/odom"/>
         <remap from="scan" to="/scan"/>
         <remap from="base_footprint" to="/base_footprint"/>
+
+        <include file="$(find tf_sim)/launch_real/robot.launch" >
+            /robot/odom
+            <arg name="robot_name" value="robot_0"/>
+            <args name="use_sim_time" value="$(arg use_sim_time)"/>
+            <arg name="mac" default="02:01:00:00:00:00" />
+            <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
+        </include>
     </group>
 
 </launch>
