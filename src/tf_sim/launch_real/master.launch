@@ -17,7 +17,7 @@
 
     <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00"/>
 
-    <group ns="robot">
+    <group>
         <remap from="odom" to="/odom"/>
         <remap from="map" to="/map"/>
         <remap from="map_metadata" to="/map_metadata"/>
