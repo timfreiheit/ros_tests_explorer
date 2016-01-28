@@ -91,6 +91,8 @@
        
         <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam name="robot_radius" value="0.4" ns="global_costmap"/>
+        <rosparam name="robot_radius" value="0.4" ns="local_costmap"/>
         <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/base_local_planner_params.yaml" command="load" />
@@ -129,6 +131,8 @@
     <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />-->
     <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam name="robot_radius" value="0.4" ns="global_costmap"/>
+        <rosparam name="robot_radius" value="0.4" ns="local_costmap"/>
 
     <include file="$(find explorer)/launch/simple_navigation_turtlebot.launch">
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
@@ -151,8 +155,10 @@
 <!--
         <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />-->
-    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam name="robot_radius" value="0.4" ns="global_costmap"/>
+        <rosparam name="robot_radius" value="0.4" ns="local_costmap"/>
         <arg name="frontier_selection" value="4" />
     </include>
 
