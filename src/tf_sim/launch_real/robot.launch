@@ -3,7 +3,7 @@
 	
     <arg name="use_sim_time" default="false" />
     <arg name="robot_name" default="robot_x"/>
-    <arg name="interface" default="lo" />
+    <arg name="interface" default="wlan0" />
 
     <arg name="mac" default="02:01:00:00:00:00" />
     <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00"/>
