@@ -15,7 +15,7 @@
         <arg name="scan_topic" value="/scan" />
     </include>
 
-    <arg name="sim_robot_macs" default="turtlebot-01,54:27:1e:48:64:4e;turtlebot-02,54:27:1e:48:4e:b4"/>
+    <arg name="sim_robot_macs" default="turtlebot_01,54:27:1e:48:64:4e;turtlebot_02,54:27:1e:48:4e:b4"/>
 
     <group>
         <remap from="odom" to="/odom"/>
@@ -26,7 +26,7 @@
         <remap from="base_footprint" to="/base_footprint"/>
         
         <include file="$(find tf_sim)/launch_real/robot.launch" >
-            <arg name="robot_name" value="turtlebot-02"/>
+            <arg name="robot_name" value="turtlebot_02"/>
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="54:27:1e:48:4e:b4" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
