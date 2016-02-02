@@ -15,7 +15,7 @@
         <arg name="scan_topic" value="/scan" />
     </include>
 
-    <arg name="sim_robot_macs" default="turtlebot_01,54:27:1e:48:64:4e;turtlebot_02,54:27:1e:48:4e:b4"/>
+    <arg name="sim_robot_macs" default="turtlebot_01,54:27:1e:48:64:4e!turtlebot_02,54:27:1e:48:4e:b4"/>
 
     <group>
         <remap from="odom" to="/odom"/>
