@@ -96,7 +96,11 @@ public:
                     hostname_c[1023] = '\0';
                     gethostname(hostname_c, 1023);
                     robot_name = std::string(hostname_c);
+                    
+                    // '-' is not allows as ros node name
+                    std::replace( robot_name.begin(), robot_name.end(), '-', '_');
                     ROS_INFO("NO SIMULATION! Robot name: %s", robot_name.c_str());
+
                                         
                     /*
                      * THIS IS REQUIRED TO PERFORM COORDINATED EXPLORATION
