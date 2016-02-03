@@ -12,7 +12,7 @@
              Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 -->
         <arg name="scan_topic" value="/scan" />
     </include>
-    
+
     <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
 
     <param name="base_frame" value="base_footprint"/>
@@ -77,7 +77,6 @@
         <param name="global_costmap/map_topic" value="/map" />
         <param name="local_costmap/map_topic" value="/map" />
 
-        <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
         <remap from="odom" to="$(arg odom_topic)"/>
 
 <!--    <remap from="cmd_vel" to="cmd_vel_mux/input/navi_raw"/> -->
