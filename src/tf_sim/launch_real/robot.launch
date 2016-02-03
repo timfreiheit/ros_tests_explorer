@@ -73,7 +73,7 @@
     <param name="xmax" value="30.0"/>
     <param name="ymax" value="30.0"/>
 
-    <param name="delta" value="0.03"/>
+    <param name="delta" value="0.05"/>
     <param name="llsamplerange" value="0.01"/>
     <param name="llsamplestep" value="0.01"/>
     <param name="lasamplerange" value="0.005"/>
