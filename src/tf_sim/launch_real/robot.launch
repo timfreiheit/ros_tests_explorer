@@ -122,7 +122,7 @@
         <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="robot_prefix" value="" />
         <arg name="robot_local_map_frame" value="map" />
-        <arg name="output" value="log" />
+        <arg name="output" value="screen" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <param name="exchange_position" value="true" />
