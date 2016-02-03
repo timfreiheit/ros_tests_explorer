@@ -54,8 +54,10 @@ MapMerger::MapMerger()
         int status = gethostname(hostname_c, 1023);
         if(status == -1)
             ROS_ERROR("Cannot determine hostname. ERROR: %s", strerror(errno));
-        else
+        else {
             robot_name = std::string(hostname_c);
+            std::replace( robot_name.begin(), robot_name.end(), '-', '_');
+        }
     }
     nodeHandle->param<bool>("splitted",splitted,true);;
     nodeHandle->param<bool>("debug",debug,true);

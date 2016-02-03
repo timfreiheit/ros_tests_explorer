@@ -1071,6 +1071,7 @@ int main(int argc, char **argv)
         hostname_c[1023] = '\0';
         gethostname(hostname_c, 1023);
         hostname = std::string(hostname_c);
+        std::replace( hostname.begin(), hostname.end(), '-', '_');
     }
 
 #ifdef PRINT_PARAMS
