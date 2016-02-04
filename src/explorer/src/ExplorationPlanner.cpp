@@ -1335,8 +1335,7 @@ bool ExplorationPlanner::storeUnreachableFrontier(double x, double y, int detect
 
         unreachable_frontiers.push_back(unreachable_frontier);
       
-    }else
-    {
+    } else {
         if(detected_by_robot != robot_name)
         {
             unreachable_frontier.id = id;
@@ -1350,10 +1349,9 @@ bool ExplorationPlanner::storeUnreachableFrontier(double x, double y, int detect
         unreachable_frontier.x_coordinate = x;
         unreachable_frontier.y_coordinate = y;
 
-        frontiers.push_back(unreachable_frontier);
+        unreachable_frontiers.push_back(unreachable_frontier);
     }
-    
-    
+
     bool break_flag = false; 
     for(int i = 0; i < clusters.size(); i++)
     {
@@ -2637,7 +2635,7 @@ void ExplorationPlanner::clearVisitedAndSeenFrontiersFromClusters()
 
 void ExplorationPlanner::clearVisitedFrontiers()
 {
-//    ROS_INFO("Clear Visited");
+    ROS_INFO("Clear Visited");
     
     /* visited_frontier.at(0) is the Home point. Do not compare
      * with this point. Otherwise this algorithm deletes it, a new
@@ -2678,6 +2676,8 @@ void ExplorationPlanner::clearVisitedFrontiers()
         }
     }
     
+    ROS_INFO("Size of all frontiers in the list: %lu", frontiers.size());
+
 //    for(int i= 0; i< goals_to_clear.size(); i++)
 //    {
 //        removeStoredFrontier(goals_to_clear.at(i), goals_to_clear.); 
@@ -2686,7 +2686,8 @@ void ExplorationPlanner::clearVisitedFrontiers()
 
 void ExplorationPlanner::clearUnreachableFrontiers()
 {
-//    ROS_INFO("Clear UNREACHABLE");
+    ROS_INFO("Clear UNREACHABLE");
+    ROS_INFO("Size of unreachable frontiers in the list: %lu", unreachable_frontiers.size());
     
     /* visited_frontier.at(0) is the Home point. Do not compare
      * with this point. Otherwise this algorithm deletes it, a new
@@ -2700,34 +2701,37 @@ void ExplorationPlanner::clearUnreachableFrontiers()
     
     for (int i = 1; i < unreachable_frontiers.size(); i++)
     {
-        for (int j = 0; j < frontiers.size(); j++)
-	{
+        for (int j = 0; j < frontiers.size(); j++) {
             double diff_x = unreachable_frontiers.at(i).x_coordinate - frontiers.at(j).x_coordinate;
             double diff_y = unreachable_frontiers.at(i).y_coordinate - frontiers.at(j).y_coordinate;
 
-            if (fabs(diff_x) <= 0.2 && fabs(diff_y) <= 0.2) {
+            //ROS_WARN("Check Frontier: %d, %d: diff_x: %f, diff_y: %f, x: %f      y: %f", j,  frontiers.at(j).id, fabs(diff_x), fabs(diff_y), frontiers.at(j).x_coordinate, frontiers.at(j).y_coordinate);
+            if (fabs(diff_x) <= 2 && fabs(diff_y) <= 2) {
+                ROS_WARN("Remove Frontier: %d:  x: %f      y: %f", frontiers.at(j).id, frontiers.at(j).x_coordinate, frontiers.at(j).y_coordinate);
 //                goals_to_clear.push_back(frontiers.at(j).id);
                 if(robot_prefix_empty_param == true)
                 {
-                    removeStoredFrontier(frontiers.at(j).id, frontiers.at(j).detected_by_robot_str);
+                    bool b = removeStoredFrontier(frontiers.at(j).id, frontiers.at(j).detected_by_robot_str);
                     if(j > 0)
                     {
                         j--;
                     }
                 }else
                 {
-                    removeStoredFrontier(frontiers.at(j).id, "");
+                    bool b = removeStoredFrontier(frontiers.at(j).id, "");
                     if(j > 0)
                     {
                         j--;
                     }
     //                    goals_to_clear.push_back(frontiers.at(j).id);
                 }
-                break;
+                // do not break. remove all frontiers around
+                //break;
             }
         }
     }
-    
+    ROS_INFO("Size of all frontiers in the list: %lu", frontiers.size());
+     
 //    for(int i= 0; i< goals_to_clear.size(); i++)
 //    {
 //        removeStoredFrontier(goals_to_clear.at(i)); 

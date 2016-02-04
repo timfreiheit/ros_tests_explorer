@@ -24,6 +24,8 @@
 //#include <sound_play/sound_play.h>
 #include <boost/filesystem.hpp>
 #include <map_merger/LogMaps.h>
+#include <nav_msgs/GetPlan.h>
+
 
 
 //#define PROFILE
@@ -746,21 +748,20 @@ public:
                                 }
 
 
-                                if(navigate_to_goal == true && goal_determined == true)
-                                {
+                                if(navigate_to_goal == true && goal_determined == true) {
                                     exploration->calculate_travel_path(exploration->visited_frontiers.at(exploration->visited_frontiers.size()-1).x_coordinate, exploration->visited_frontiers.at(exploration->visited_frontiers.size()-1).y_coordinate);
 
-                                    ROS_DEBUG("Storeing visited...");
+                                    ROS_INFO("Storeing visited...");
                                     exploration->storeVisitedFrontier(final_goal.at(0),final_goal.at(1),final_goal.at(2),robot_str.at(0),final_goal.at(3)); 
                                     ROS_DEBUG("Stored Visited frontier");
                                    
-                                }   
-                                else if(navigate_to_goal == false && goal_determined == true)
-                                {
-                                    ROS_DEBUG("Storeing unreachable...");
-                                    exploration->storeUnreachableFrontier(final_goal.at(0),final_goal.at(1),final_goal.at(2),robot_str.at(0),final_goal.at(3));                            
+                                } else if(navigate_to_goal == false && goal_determined == true) {
+                                    ROS_INFO("Storeing unreachable...");
+                                    storeUnreachableFrontier(final_goal.at(0),final_goal.at(1),final_goal.at(2),robot_str.at(0),final_goal.at(3));                            
                                     ROS_DEBUG("Stored unreachable frontier");
-                                } 
+                                } else {
+                                    ROS_INFO("Result: navigate_to_goal: %d, goal_determined: %d", navigate_to_goal, goal_determined);
+                                }
 
     //                            exploration->clearVisitedFrontiers();
     //                            exploration->clearUnreachableFrontiers();  
@@ -1578,6 +1579,35 @@ public:
 
 		return true;
 	}
+
+    void storeUnreachableFrontier(double x, double y, int detected_by_robot, std::string detected_by_robot_str, int id) {
+        explorer.storeUnreachableFrontier(x, y, detected_by_robot, detected_by_robot_str, id);
+        for (int i = 0; i < frontiers.size(); i++) {
+            double diff_x = fabs(unreachable_frontier.x_coordinate - frontiers.at(i).x_coordinate);
+            double diff_y = fabs(unreachable_frontier.y_coordinate - frontiers.at(i).y_coordinate);
+
+            //ROS_WARN("Check Frontier: %d, %d: diff_x: %f, diff_y: %f, x: %f      y: %f", j,  frontiers.at(j).id, fabs(diff_x), fabs(diff_y), frontiers.at(j).x_coordinate, frontiers.at(j).y_coordinate);
+            if (diff_x > 0.5 && diff_x <= 4 && diff_y > 0.5 && diff_y <= 4) {
+                geometry_msgs::PoseStamped start;
+                start.header.seq = home_point_message++;
+                start.header.stamp = ros::Time::now();
+                start.header.frame_id = move_base_frame;
+                start.point.x = frontiers.at(i).x_coordinate;
+                start.point.y = frontiers.at(i).y_coordinate;
+                nav_msgs::GetPlan plan;
+                plan.start = start;
+                plan.goal = start;
+                if (ros::service::call("move_base/make_plan", plan)) {
+                    ROS_ERROR("Called Service: make_plan");
+                    //if (plan.plan == NULL) {
+                    //    ROS_ERROR("plan is null");    
+                    //} else {
+                    //    ROS_ERROR("plan is not null");
+                    //}
+                }            
+            }
+        }
+    }
 
 public:
 

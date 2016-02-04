@@ -50,7 +50,7 @@
     <include file="$(find explorer)/launch/exploration.launch">
 	    <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="robot_prefix" value="$(arg robot_prefix)" />
-        <arg name="output" value="log" />
+        <arg name="output" value="screen" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
         <!-- 

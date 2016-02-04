@@ -18,6 +18,7 @@
     </group>
 
 
+<!--
     <group ns="robot_1">
         <include file="$(find tf_sim)/launch/robot.launch" >
             <arg name="robot_name" value="robot_1"/>
@@ -26,6 +27,6 @@
             <arg name="mac" default="02:02:00:00:00:00" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
         </include>
-    </group>
+    </group>-->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tf_sim)/stage.rviz" /> 
 </launch>
