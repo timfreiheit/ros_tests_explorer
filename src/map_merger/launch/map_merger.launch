@@ -7,6 +7,7 @@
     <arg name="use_sim_time" default="false" />
     <arg name="output" default="log" />
 	<arg name="position_local_robot_topic" default="odom" />
+	<arg name="max_rotation_robots" default="5"/>
 
   
 	<node pkg="map_merger" type="map_merger" name="map_merger" output="screen"   >
@@ -21,6 +22,7 @@
 		<param name="seconds_pub_timer" value="6" />
 		<param name="seconds_recompute_transform" value="25" />
 		<param name="seconds_send_position" value="1" />
+		<param name="max_rotation_robots" value="$(arg max_rotation_robots)"/> 
 		<param name="position_other_robots_topic" value="position_other_robots"/>       
     	<param name="split_size" value="2048" />
     	<param name="splitted" value="true" />
