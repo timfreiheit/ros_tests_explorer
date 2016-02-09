@@ -169,7 +169,7 @@
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
 
-        <arg name="frontier_selection" value="1" />
+        <arg name="frontier_selection" value="4" />
     </include>
 
 </launch>

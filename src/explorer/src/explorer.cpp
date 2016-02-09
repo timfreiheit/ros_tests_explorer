@@ -1588,7 +1588,7 @@ public:
             double diff_x = fabs(x - exploration->frontiers.at(i).x_coordinate);
             double diff_y = fabs(y - exploration->frontiers.at(i).y_coordinate);
 
-            //ROS_WARN("Check Frontier: %d, %d: diff_x: %f, diff_y: %f, x: %f      y: %f", j,  frontiers.at(j).id, fabs(diff_x), fabs(diff_y), frontiers.at(j).x_coordinate, frontiers.at(j).y_coordinate);
+            // TODO improve
             if (diff_x > 0.5 && diff_x <= 40 && diff_y > 0.5 && diff_y <= 40) {
                 geometry_msgs::PoseStamped start;
                 start.header.seq = home_point_message++;
@@ -1607,7 +1607,7 @@ public:
                             exploration->frontiers.at(i).y_coordinate,
                             detected_by_robot,
                             detected_by_robot_str,
-                            id
+                            exploration->frontiers.at(i).id
                         );
         
                     } else {

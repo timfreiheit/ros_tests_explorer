@@ -841,7 +841,7 @@ void MapMerger::callback_map_other(const adhoc_communication::MmMapUpdateConstPt
     nav_msgs::OccupancyGrid tmp =  msg.get()->map;
     nav_msgs::OccupancyGrid * toInsert = &tmp;
     int index_robots = -1;
-    ROS_DEBUG("Got map from %s",msg.get()->src_robot.c_str());
+    ROS_INFO("Got map from %s",msg.get()->src_robot.c_str());
     std::string src_robot = msg.get()->src_robot;
     if(has_local_map == false)
     {
@@ -1136,7 +1136,7 @@ void MapMerger::start()
 
 void MapMerger::mergeMaps(nav_msgs::OccupancyGrid *mapToMerge, int min_x, int min_y, int max_x, int max_y)
 {
-    ROS_DEBUG("Start merging map: [%s]",mapToMerge->header.frame_id.c_str());
+    ROS_INFO("Start merging map: [%s]",mapToMerge->header.frame_id.c_str());
     if(global_map == NULL)
     {
         ROS_INFO("Stop merging maps, globl map is null");
@@ -1178,7 +1178,7 @@ void MapMerger::mergeMaps(nav_msgs::OccupancyGrid *mapToMerge, int min_x, int mi
                     global_map->data[index_global_map] = mapToMerge->data[index_map_to_merge];
          }
     }
-     ROS_DEBUG("Merged maps succesfully");
+     ROS_INFO("Merged maps succesfully");
 }
 
 cv::Mat MapMerger::mapToMat(const nav_msgs::OccupancyGrid *map)
