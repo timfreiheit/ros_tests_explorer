@@ -899,7 +899,7 @@ void MapMerger::callback_map_other(const adhoc_communication::MmMapUpdateConstPt
         if(new_data_maps->size() < index_robots)
             return;
         new_data_maps->at(index_robots) = true;
-        ROS_DEBUG("GOT NOT LOCAL MAP,Process it, data size:%lu",toInsert->data.size());
+        ROS_INFO("GOT NOT LOCAL MAP,Process it, data size:%lu",toInsert->data.size());
 
         if(map_data->size() < index_robots+1)
         {
