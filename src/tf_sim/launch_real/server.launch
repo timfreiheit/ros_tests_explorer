@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+	
+    <arg name="use_sim_time" default="false" />
+    <arg name="robot_name" default="robot_x"/>
+    <arg name="interface" default="wlan0" />
+
+    <arg name="mac" default="02:01:00:00:00:00" />
+    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00"/>
+    
+    <param name="use_sim_time"  value="$(arg use_sim_time)"/>
+
+	<include file="$(find adhoc_communication)/launch/adhoc_communication.launch">
+        <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
+        <arg name="robot_name" value="$(arg robot_name)" />
+	    <!--<arg name="robot_prefix" value="$(arg robot_prefix)" />-->
+        <arg name="interface" value="$(arg interface)" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="mac" value="$(arg mac)" />
+        <!--<arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />-->
+        <arg name="output" value="screen" />
+    </include>
+    
+    <include file="$(find map_merger)/launch/map_merger.launch">
+        <arg name="robot_name" value="$(arg robot_name)" />
+        <arg name="robot_prefix" value="" />
+        <arg name="output" value="screen" />
+        <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="has_local_map" value="false"/>
+        <arg name="max_rotation_robots" value="10"/>
+        <param name="exchange_position" value="false" />
+        <param name="seconds_recompute_transform" value="25" />
+    </include>
+
+</launch>

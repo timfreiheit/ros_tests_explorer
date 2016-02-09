@@ -85,9 +85,12 @@ MapMerger::MapMerger()
     nodeHandle->param<std::string>("log_path",log_path,"");
 
     time_start = ros::Time::now();
-   /* if(has_local_map == false)
+    if(has_local_map == false) {
         robot_name = "BASE";
-    robot_hostname = robot_name;*/
+        map_width = 3000;
+        map_height = 3000;
+    }
+    robot_hostname = robot_name;
     //DEBUG
 #ifdef DEBUG
 
@@ -855,6 +858,7 @@ void MapMerger::callback_map_other(const adhoc_communication::MmMapUpdateConstPt
                 local_map->info.width = map_width;
                 local_map->info.height = map_height;
                 local_map->data.resize(local_map->info.height * local_map->info.width);
+                ROS_INFO("Resize done");
                 //here recalc Indexes!!!
                 for(int i = 0; i < local_map->data.size(); i++)
                     local_map->data[i] = -1;

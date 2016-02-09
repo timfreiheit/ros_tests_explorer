@@ -8,6 +8,7 @@
     <arg name="output" default="log" />
 	<arg name="position_local_robot_topic" default="odom" />
 	<arg name="max_rotation_robots" default="5"/>
+	<arg name="has_local_map" default="true"/>
 
   
 	<node pkg="map_merger" type="map_merger" name="map_merger" output="screen"   >
@@ -29,5 +30,6 @@
     	<param name="local_map_topic" value="$(arg robot_prefix)/map" />
     	<param name="meta_topic_over_network" value="$(arg robot_prefix)/map_meta" />
     	<param name="local_map_metadata_topic" value="$(arg robot_prefix)/map_metadata" />
+    	<param name="has_local_map" value="$(arg has_local_map)"/>
 	</node>  
 </launch>

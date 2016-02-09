@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <arg name="use_sim_time" default="false" />
+    <param name="use_sim_time"  value="$(arg use_sim_time)"/>
+
+    <group>
+        <remap from="odom" to="/odom"/>
+        <remap from="map" to="/map"/>
+        <remap from="map_metadata" to="/map_metadata"/>
+        <remap from="base" to="/odom"/>
+        <remap from="scan" to="/scan"/>
+        <remap from="base_footprint" to="/base_footprint"/>
+        
+        <include file="$(find tf_sim)/launch_real/server.launch" >
+            <arg name="robot_name" value="BASE"/>
+            <args name="use_sim_time" value="$(arg use_sim_time)"/>
+            <arg name="mac" default="80:e6:50:13:ac:86" />
+        </include>
+    </group>
+
+</launch>
