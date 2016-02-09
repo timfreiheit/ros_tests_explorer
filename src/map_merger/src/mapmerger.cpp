@@ -1593,21 +1593,21 @@ void MapMerger::sendMapOverNetwork(string destination, std::vector<int>* contain
                 exchange.request.map_update.update_numbers = *containedUpdates;
                 std::string hostname = destination;
                 exchange.request.dst_robot = destination;
-                ROS_DEBUG("Send Map to %s(if nothing -> boradcast) ,frame id:%s| topic:[%s]|data<_size:%lu",
+                ROS_INFO("Send Map to %s(if nothing -> boradcast) ,frame id:%s| topic:[%s]|data<_size:%lu",
                           destination.c_str(),t->header.frame_id.c_str(),
                           topic_over_network.c_str(), exchange.request.map_update.map.data.size());
                 if(client.call(exchange))
                 {
                     if(exchange.response.status)
                         if(destination == "")
-                            ROS_DEBUG("Sended Map to:all,topic:%s|r:%i;c:%i",exchange.request.topic.c_str(),row,collum);
+                            ROS_INFO("Sended Map to:all,topic:%s|r:%i;c:%i",exchange.request.topic.c_str(),row,collum);
                     else
-                        ROS_DEBUG("Sended Map to:%s,topic:%s|r:%i;c:%i",exchange.request.dst_robot.c_str(),exchange.request.topic.c_str(),row,collum);
+                        ROS_INFO("Sended Map to:%s,topic:%s|r:%i;c:%i",exchange.request.dst_robot.c_str(),exchange.request.topic.c_str(),row,collum);
                     else
                         ROS_WARN("Destination host unreachable [%s](if nothing -> boradcast)",hostname.c_str());
                 }
                 else
-                    ROS_DEBUG("Could not call service to send map");
+                    ROS_INFO("Could not call service to send map");
             }
         }
 }
