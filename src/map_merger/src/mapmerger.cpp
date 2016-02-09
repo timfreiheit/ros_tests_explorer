@@ -71,7 +71,7 @@ MapMerger::MapMerger()
     nodeHandle->param<int>("seconds_recompute_transform",seconds_recompute_transform,5);
     nodeHandle->param<int>("seconds_send_position",seconds_send_position,2);
     nodeHandle->param<double>("max_trans_robots",max_trans_robot,-1);
-    nodeHandle->param<double>("max_rotation_robots",max_rotation_robot,5);
+    nodeHandle->param<double>("max_rotation_robots",max_rotation_robot, 25);
 
     nodeHandle->param<std::string>("local_map_topic",local_map_topic,"/map");
     nodeHandle->param<std::string>("local_map_metadata_topic",local_map_metadata_topic,"/map_metadata");
