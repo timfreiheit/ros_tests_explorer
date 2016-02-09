@@ -2977,7 +2977,7 @@ void ExplorationPlanner::findFrontiers() {
               
 //                ROS_INFO("index: %d   map_x: %d   map_y: %d   world_x: %f   world_y: %f", allFrontiers.at(i), mx, my, wx, wy);
                 
-		if(select_frontier == 1 || true)
+		if(select_frontier == 1)
 		{
 			result = true;
 			for (unsigned int j = 0; j < frontiers.size(); j++)
