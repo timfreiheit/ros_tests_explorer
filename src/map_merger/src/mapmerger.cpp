@@ -410,7 +410,7 @@ void MapMerger::callback_global_pub(const ros::TimerEvent &e)
             }
             nav_msgs::OccupancyGrid * whole_map = map_data->at(i);
             std::string name = whole_map->header.frame_id;
-            ROS_DEBUG("Merging [%s] map",name.c_str());
+            ROS_INFO("Merging [%s] map",name.c_str());
             nav_msgs::OccupancyGrid * map_to_merge = new nav_msgs::OccupancyGrid();
             map_to_merge->data = whole_map->data;
             map_to_merge->info = whole_map->info;
@@ -1412,7 +1412,7 @@ bool MapMerger::recomputeTransform(int mapDataIndex)
     //then updates the map data.
     if(worked)
     {
-        ROS_DEBUG("Storing new Transform for %s in array",map->header.frame_id.c_str());
+        ROS_INFO("Storing new Transform for %s in array",map->header.frame_id.c_str());
         if(findTransformIndex(mapDataIndex) == -1)
         {
             ROS_DEBUG("Appending transform for robot:%i",mapDataIndex);
@@ -1424,6 +1424,8 @@ bool MapMerger::recomputeTransform(int mapDataIndex)
             ROS_DEBUG("Updateing transform for robot:%i",mapDataIndex);
             transforms->at(findTransformIndex(mapDataIndex)) = newTrans;
         }
+    } else {
+       ROS_INFO("NO Transform for %s",map->header.frame_id.c_str()); 
     }
     return worked;
 }
