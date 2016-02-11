@@ -5,6 +5,7 @@
     <arg name="robot_name" default="robot_x"/>
     <arg name="robot_prefix" default="/robot_x" />
     <arg name="interface" default="lo" />
+    <arg name="output" default="screen" />
 
     <arg name="mac" default="02:01:00:00:00:00" />
     <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00"/>
@@ -37,11 +38,11 @@
         <arg name="ymax" value="35" />
         <arg name="ymin" value="-35" />
     </include>
-    <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
+    <include file="$(find map_merger)/launch/map_merger.launch">
         <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="robot_prefix" value="$(arg robot_prefix)" />
         <arg name="robot_local_map_frame" value="$(arg robot_name)/map" />
-        <arg name="output" value="log" />
+        <arg name="output" value="$(arg output)" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <param name="exchange_position" value="true" />
@@ -50,7 +51,7 @@
     <include file="$(find explorer)/launch/exploration.launch">
 	    <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="robot_prefix" value="$(arg robot_prefix)" />
-        <arg name="output" value="screen" />
+        <arg name="output" value="$(arg output)" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
 
         <!-- 

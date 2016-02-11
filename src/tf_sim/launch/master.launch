@@ -5,7 +5,7 @@
     <arg name="use_sim_time" default="true" />
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 
-    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00"/>
+    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00!BASE,03:03:00:00:00:00"/>
 	<!--<arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00"/>-->
     <group ns="robot_0">
         <include file="$(find tf_sim)/launch/robot.launch" >
@@ -14,9 +14,9 @@
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="02:01:00:00:00:00" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
+            <arg name="output" value="log"/>
         </include>
     </group>
-
 
 <!--
     <group ns="robot_1">
@@ -28,5 +28,19 @@
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
         </include>
     </group>-->
+
+<group ns="BASE">
+    
+    <include file="$(find tf_sim)/launch/server.launch">
+        <arg name="robot_name" value="BASE"/>
+        <arg name="robot_prefix" value="/BASE" />
+        <args name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="mac" default="03:03:00:00:00:00" />
+        <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
+        <arg name="output" value="screen"/>
+    </include>
+
+</group>
+
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tf_sim)/stage.rviz" /> 
 </launch>
