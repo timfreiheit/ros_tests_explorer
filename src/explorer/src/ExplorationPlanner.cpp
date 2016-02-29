@@ -3205,7 +3205,7 @@ bool ExplorationPlanner::auctioning(std::vector<double> *final_goal, std::vector
     std::string numbers_of_operating_robots; 
     
     ROS_INFO("Robot %d starting an auction", robot_name);
-    
+
 //    if(first_run == true)
 //    {
 //        pub_auctioning_first.publish(auction_msg);

@@ -47,6 +47,7 @@
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
+        <arg name="max_rotation_robots" value="360"/>
     </include>
     <include file="$(find explorer)/launch/exploration.launch">
 	    <arg name="robot_name" value="$(arg robot_name)" />
@@ -64,12 +65,12 @@
          * 4 ... Navigate to random Frontier
          * 5 ... Cluster frontiers, then navigate to nearest cluster 
          *       using EUCLIDEAN DISTANCE (with and without
-         *       negotiation)
+         *       negotiation
          * 6 ... Cluster frontiers, then navigate to random cluster
          *       (with and without negotiation)
          -->
 
-        <arg name="frontier_selection" value="4" />
+        <arg name="frontier_selection" value="1" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
     </include>
 </launch>

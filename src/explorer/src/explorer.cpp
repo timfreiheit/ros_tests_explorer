@@ -26,7 +26,6 @@
 #include <map_merger/LogMaps.h>
 #include <nav_msgs/GetPlan.h>
 
-
 #define forEach BOOST_FOREACH
 
 
@@ -1290,7 +1289,7 @@ public:
 
         
 	bool navigate(std::vector<double> goal) {
-		
+
 		/*
 		 * If received goal is not empty (x=0 y=0), drive the robot to this point
 		 * and mark that goal as seen in the last_goal_position vector!!!
@@ -1304,6 +1303,7 @@ public:
 			
                         counter++;
 			ROS_INFO("GOAL %d:  x: %f      y: %f", counter, goal.at(0), goal.at(1));
+        
 			completed_navigation = move_robot(counter, goal.at(0), goal.at(1));
 			rotation_counter = 0;
 		}
@@ -1366,6 +1366,7 @@ public:
                                     {
                                         ROS_DEBUG("doing navigation to back-off goal");
                                         visualize_goal_point(backoffGoal.at(0), backoffGoal.at(1));
+
                                         completed_navigation = move_robot(counter, backoffGoal.at(0), backoffGoal.at(1));
                                         rotation_counter = 0;
                                         if(completed_navigation == true)
@@ -1433,7 +1434,19 @@ public:
 	}
 
 	bool move_robot(int seq, double position_x, double position_y) {
-            
+
+
+        /*try {
+            // check if there is a valid plan for this position
+            if (!checkIfFrontierIsReachable(position_x, position_y)) {
+                exploration->next_auction_position_x = robotPose.getOrigin().getX();
+                exploration->next_auction_position_y = robotPose.getOrigin().getY();
+                return false;
+            }
+        } catch(...) {
+            ROS_ERROR("ERROR checking reachablility");
+        }*/
+
             exploration->next_auction_position_x = position_x;
             exploration->next_auction_position_y = position_y;
             
@@ -1584,40 +1597,67 @@ public:
 
     void storeUnreachableFrontier(double x, double y, int detected_by_robot, std::string detected_by_robot_str, int id) {
         exploration->storeUnreachableFrontier(x, y, detected_by_robot, detected_by_robot_str, id);
-        for (int i = 0; i < exploration->frontiers.size(); i++) {
-            double diff_x = fabs(x - exploration->frontiers.at(i).x_coordinate);
-            double diff_y = fabs(y - exploration->frontiers.at(i).y_coordinate);
-
-            // TODO improve
-            if (diff_x > 0.5 && diff_x <= 40 && diff_y > 0.5 && diff_y <= 40) {
-                geometry_msgs::PoseStamped start;
-                start.header.seq = home_point_message++;
-                start.header.stamp = ros::Time::now();
-                start.header.frame_id = move_base_frame;
-                start.pose.position.x = exploration->frontiers.at(i).x_coordinate;
-                start.pose.position.y = exploration->frontiers.at(i).y_coordinate;
-                nav_msgs::GetPlan plan;
-                plan.request.goal = start;
-                if (ros::service::call("move_base/make_plan", plan)) {
-                    ROS_ERROR("Called Service: make_plan");
-                    int size = plan.response.plan.poses.size();
-                    if (size == 0) {
-                        ROS_ERROR("plan is empty"); 
-                        exploration->storeUnreachableFrontier(exploration->frontiers.at(i).x_coordinate,
-                            exploration->frontiers.at(i).y_coordinate,
-                            detected_by_robot,
-                            detected_by_robot_str,
-                            exploration->frontiers.at(i).id
-                        );
-        
-                    } else {
-                        ROS_ERROR("plan is valid size: %d", size);
-                         forEach(const geometry_msgs::PoseStamped &p, plan.response.plan.poses) {
-                            ROS_ERROR("x = %f, y = %f", p.pose.position.x, p.pose.position.y);
-                        } 
-                    }
-                }            
+        try {
+            for (int i = 0; i < exploration->frontiers.size(); i++) {
+                double diff_x = fabs(x - exploration->frontiers.at(i).x_coordinate);
+                double diff_y = fabs(y - exploration->frontiers.at(i).y_coordinate);
+                // TODO improve
+                if (diff_x > 0.5 && diff_x <= 40 && diff_y > 0.5 && diff_y <= 40) {
+                    geometry_msgs::PoseStamped start;
+                    start.header.seq = home_point_message++;
+                    start.header.stamp = ros::Time::now();
+                    start.header.frame_id = move_base_frame;
+                    start.pose.position.x = exploration->frontiers.at(i).x_coordinate;
+                    start.pose.position.y = exploration->frontiers.at(i).y_coordinate;
+                    nav_msgs::GetPlan plan;
+                    plan.request.goal = start;
+                    if (ros::service::call("move_base/make_plan", plan)) {
+                        ROS_ERROR("Called Service: make_plan");
+                        int size = plan.response.plan.poses.size();
+                        if (size == 0) {
+                            ROS_ERROR("plan is empty"); 
+                            exploration->storeUnreachableFrontier(exploration->frontiers.at(i).x_coordinate,
+                                exploration->frontiers.at(i).y_coordinate,
+                                detected_by_robot,
+                                detected_by_robot_str,
+                                exploration->frontiers.at(i).id
+                            );
+            
+                        }
+                    }            
+                }
             }
+        } catch(...){
+            ROS_ERROR("ERROR while checking plan");
+        }
+    }
+
+    bool checkIfFrontierIsReachable(double x, double y) {
+        geometry_msgs::PoseStamped start;
+        start.header.seq = home_point_message++;
+        start.header.stamp = ros::Time::now();
+        start.header.frame_id = move_base_frame;
+        start.pose.position.x = x;
+        start.pose.position.y = y;
+        nav_msgs::GetPlan plan;
+        plan.request.goal = start;
+        if (ros::service::call("move_base/make_plan", plan)) {
+            ROS_ERROR("Called Service: make_plan");
+            int size = plan.response.plan.poses.size();
+            if (size == 0) {
+                ROS_ERROR("plan is empty"); 
+                /*exploration->storeUnreachableFrontier(exploration->frontiers.at(i).x_coordinate,
+                    exploration->frontiers.at(i).y_coordinate,
+                    detected_by_robot,
+                    detected_by_robot_str,
+                    exploration->frontiers.at(i).id
+                );*/
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
         }
     }
 
