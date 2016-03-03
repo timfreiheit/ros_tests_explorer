@@ -6,10 +6,10 @@
     <arg name="log_path" />
     <arg name="use_sim_time" default="true" />
     <arg name="output" default="log" />
-    <arg name="xmax" default="35" />
-    <arg name="xmin" default="-35" />
-    <arg name="ymax" default="35" />
-    <arg name="ymin" default="-35" />
+    <arg name="xmax" default="15" />
+    <arg name="xmin" default="-15" />
+    <arg name="ymax" default="15" />
+    <arg name="ymin" default="-15" />
 
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 
@@ -22,6 +22,7 @@
         <param name="ymax" value="$(arg ymax)" />
         <param name="xmin" value="$(arg xmin)" />
         <param name="ymin" value="$(arg ymin)" />
+        <param name="delta" value="0.05"/>
         <param name="transform_publish_period " value="1.00" />
         <param name="particles" value="5" />
         <param name="maxRange" value="60" />

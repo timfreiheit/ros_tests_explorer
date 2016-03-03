@@ -76,7 +76,29 @@ Visualization Manager:
           Value: true
         robot_1/base_link:
           Value: true
+        robot_1/map:
+          Value: true
         robot_1/odom:
+          Value: true
+        robot_2/base_footprint:
+          Value: true
+        robot_2/base_laser_link:
+          Value: true
+        robot_2/base_link:
+          Value: true
+        robot_2/map:
+          Value: true
+        robot_2/odom:
+          Value: true
+        robot_3/base_footprint:
+          Value: true
+        robot_3/base_laser_link:
+          Value: true
+        robot_3/base_link:
+          Value: true
+        robot_3/map:
+          Value: true
+        robot_3/odom:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -191,13 +213,13 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: true
-    - Alpha: 0.7
-      Class: rviz/Map
-      Color Scheme: map
-      Draw Behind: false
+    - Class: rviz/MarkerArray
       Enabled: true
-      Name: Map
-      Topic: /robot_0/move_base/global_costmap/costmap
+      Marker Topic: /robot_0/map_merger/position_robot_2
+      Name: Positions_2
+      Namespaces:
+        {}
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:
@@ -256,5 +278,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1276
-  X: 97
-  Y: 207
+  X: 87
+  Y: 197

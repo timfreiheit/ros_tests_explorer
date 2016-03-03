@@ -5,14 +5,14 @@
     <arg name="use_sim_time" default="true" />
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 
-    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00!BASE,03:03:00:00:00:00"/>
+    <arg name="sim_robot_macs" default="robot_0,02:00:00:00:00:00!robot_1,02:01:00:00:00:00!robot_2,02:02:00:00:00:00!robot_3,04:03:00:00:00:00!BASE,03:00:00:00:00:00"/>
 	<!--<arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00"/>-->
     <group ns="robot_0">
         <include file="$(find tf_sim)/launch/robot.launch" >
             <arg name="robot_name" value="robot_0"/>
             <arg name="robot_prefix" value="/robot_0" />
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
-            <arg name="mac" default="02:01:00:00:00:00" />
+            <arg name="mac" default="02:00:00:00:00:00" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
             <arg name="output" value="log"/>
         </include>
@@ -24,10 +24,32 @@
             <arg name="robot_name" value="robot_1"/>
             <arg name="robot_prefix" value="/robot_1" />
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
+            <arg name="mac" default="02:01:00:00:00:00" />
+            <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
+        </include>
+    </group>
+
+
+    <group ns="robot_2">
+        <include file="$(find tf_sim)/launch/robot.launch" >
+            <arg name="robot_name" value="robot_2"/>
+            <arg name="robot_prefix" value="/robot_2" />
+            <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="02:02:00:00:00:00" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
         </include>
     </group>
+
+<!--
+    <group ns="robot_3">
+        <include file="$(find tf_sim)/launch/robot.launch" >
+            <arg name="robot_name" value="robot_3"/>
+            <arg name="robot_prefix" value="/robot_3" />
+            <args name="use_sim_time" value="$(arg use_sim_time)"/>
+            <arg name="mac" default="02:03:00:00:00:00" />
+            <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
+        </include>
+    </group>-->
 
 <!--
 <group ns="BASE">

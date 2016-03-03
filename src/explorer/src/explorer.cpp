@@ -1,7 +1,11 @@
 #include "ros/ros.h"
+#include <Explorer.h>
+#include "Explorer.h"
 #include "ExplorationPlanner.h"
 #include <ros/console.h>
 #include <ExplorationPlanner.h>
+#include "ExplorationController.h"
+#include <ExplorationController.h>
 #include <boost/lexical_cast.hpp>
 #include <move_base/MoveBaseConfig.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -28,7 +32,6 @@
 
 #define forEach BOOST_FOREACH
 
-
 //#define PROFILE
 //#ifdef PROFILE
 //#include <google/profiler.h>
@@ -45,14 +48,13 @@ void sleepok(int t, ros::NodeHandle &nh)
     ros::Duration(1.0).sleep();
 }
 
-class Explorer {
+using namespace explorer;
 
-public:
 
-	Explorer(tf::TransformListener& tf) :
+    Explorer::Explorer(tf::TransformListener& tf) :
         counter(0), rotation_counter(0), nh("~"), exploration_finished(false), number_of_robots(1), accessing_cluster(0), cluster_element_size(0),
         cluster_flag(false), cluster_element(-1), cluster_initialize_flag(false), global_iterattions(0), global_iterations_counter(0), 
-        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0){
+        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0) {
 
         
                 nh.param("frontier_selection",frontier_selection,1); 
@@ -246,7 +248,7 @@ public:
 	}
 
 
-	void explore() 
+	void Explorer::explore() 
         {
 		/*
 		 * Sleep is required to get the actual 
@@ -780,7 +782,7 @@ public:
 		}
 	}         
            
-        void frontiers()
+        void Explorer::frontiers()
         {
             ros::Rate r(5);
             while(ros::ok())
@@ -802,7 +804,7 @@ public:
         }
         
         
-        void map_info()
+        void Explorer::map_info()
         {       
             fs_csv.open(csv_file.c_str(), std::fstream::in | std::fstream::app | std::fstream::out);
             fs_csv << "#time,exploration_travel_path_global,exploration_travel_path_average,global_map_progress,local_map_progress,number_of_completed_auctions, number_of_uncompleted_auctions, frontier_selection_strategy, costmap_size, unreachable_frontiers" << std::endl;
@@ -861,7 +863,7 @@ public:
             }
         }
         
-        int global_costmap_size()
+        int Explorer::global_costmap_size()
         {
            occupancy_grid_global = costmap2d_global->getCostmap()->getCharMap();
            int num_map_cells_ = costmap2d_global->getCostmap()->getSizeInCellsX() * costmap2d_global->getCostmap()->getSizeInCellsY();
@@ -877,7 +879,7 @@ public:
            return free;
         }
         
-        int local_costmap_size()
+        int Explorer::local_costmap_size()
         {   
             if(OPERATE_ON_GLOBAL_MAP == false)
             {
@@ -910,7 +912,7 @@ public:
             }
         }
         
-        void initLogPath()
+        void Explorer::initLogPath()
         {
            /*
             *  CREATE LOG PATH
@@ -941,7 +943,7 @@ public:
              
         }
         
-        void save_progress(bool final=false)
+        void Explorer::save_progress(bool final)
         {
             ros::Duration ros_time = ros::Time::now() - time_start;
             
@@ -1049,7 +1051,7 @@ public:
     
         }
         
-        void exploration_has_finished()
+        void Explorer::exploration_has_finished()
         {
             ros::Duration ros_time = ros::Time::now() - time_start;
             
@@ -1100,7 +1102,7 @@ public:
 //#endif
         }
         
-        void indicateSimulationEnd()
+        void Explorer::indicateSimulationEnd()
         {
             /// FIXME: remove this stuff once ported to multicast
             std::stringstream robot_number;
@@ -1128,7 +1130,7 @@ public:
         }
         
         
-	bool iterate_global_costmap(std::vector<double> *global_goal, std::vector<std::string> *robot_str)
+	bool Explorer::iterate_global_costmap(std::vector<double> *global_goal, std::vector<std::string> *robot_str)
 	{
             global_costmap_iteration++;
             int counter = 0;
@@ -1288,7 +1290,7 @@ public:
 	}
 
         
-	bool navigate(std::vector<double> goal) {
+	bool Explorer::navigate(std::vector<double> goal) {
 
 		/*
 		 * If received goal is not empty (x=0 y=0), drive the robot to this point
@@ -1402,7 +1404,7 @@ public:
                 return(completed_navigation);
 	}
 
-	void visualize_goal_point(double x, double y) {
+	void Explorer::visualize_goal_point(double x, double y) {
 
 		goalPoint.header.seq = goal_point_message++;
 		goalPoint.header.stamp = ros::Time::now();
@@ -1416,7 +1418,7 @@ public:
 		pub_Point.publish < geometry_msgs::PointStamped > (goalPoint);
 	}
 
-	void visualize_home_point() {
+	void Explorer::visualize_home_point() {
 
 		homePoint.header.seq = home_point_message++;
 		homePoint.header.stamp = ros::Time::now();
@@ -1433,7 +1435,7 @@ public:
 
 	}
 
-	bool move_robot(int seq, double position_x, double position_y) {
+	bool Explorer::move_robot(int seq, double position_x, double position_y) {
 
 
         /*try {
@@ -1523,7 +1525,7 @@ public:
 		return true;
 	}
 
-	bool turn_robot(int seq) {
+	bool Explorer::turn_robot(int seq) {
 		
                 double angle = 45;
 
@@ -1575,7 +1577,7 @@ public:
 		return true;
 	}
 
-	void feedbackCallback(
+	void Explorer::feedbackCallback(
 			const move_base_msgs::MoveBaseActionFeedback::ConstPtr& msg) {
 		feedback_value = msg.get()->status.status;
 		feedback_succeed_value =
@@ -1583,7 +1585,7 @@ public:
 
 	}
 
-	bool target_reached(void) {
+	bool Explorer::target_reached(void) {
 
 		ros::NodeHandle nh_sub_move_base;
 		sub_move_base = nh_sub_move_base.subscribe("feedback", 1000,
@@ -1595,14 +1597,14 @@ public:
 		return true;
 	}
 
-    void storeUnreachableFrontier(double x, double y, int detected_by_robot, std::string detected_by_robot_str, int id) {
+    void Explorer::storeUnreachableFrontier(double x, double y, int detected_by_robot, std::string detected_by_robot_str, int id) {
         exploration->storeUnreachableFrontier(x, y, detected_by_robot, detected_by_robot_str, id);
         try {
             for (int i = 0; i < exploration->frontiers.size(); i++) {
                 double diff_x = fabs(x - exploration->frontiers.at(i).x_coordinate);
                 double diff_y = fabs(y - exploration->frontiers.at(i).y_coordinate);
                 // TODO improve
-                if (diff_x > 0.5 && diff_x <= 40 && diff_y > 0.5 && diff_y <= 40) {
+                if (diff_x > 0.5 && diff_x <= 10 && diff_y > 0.5 && diff_y <= 10) {
                     geometry_msgs::PoseStamped start;
                     start.header.seq = home_point_message++;
                     start.header.stamp = ros::Time::now();
@@ -1632,7 +1634,7 @@ public:
         }
     }
 
-    bool checkIfFrontierIsReachable(double x, double y) {
+    bool Explorer::checkIfFrontierIsReachable(double x, double y) {
         geometry_msgs::PoseStamped start;
         start.header.seq = home_point_message++;
         start.header.stamp = ros::Time::now();
@@ -1661,82 +1663,7 @@ public:
         }
     }
 
-public:
-
-        struct map_progress_t
-        {
-            double local_freespace;
-            double global_freespace;
-            double time;
-        } map_progress;
-        
-	ros::Subscriber sub_move_base, sub_obstacle;    
-        
-	// create a costmap
-	costmap_2d::Costmap2DROS* costmap2d_local;
-        costmap_2d::Costmap2DROS* costmap2d_local_size;
-	costmap_2d::Costmap2DROS* costmap2d_global;
-	costmap_2d::Costmap2D costmap;
-
-        std::vector<map_progress_t> map_progress_during_exploration;
-        
-        std::vector<int> clusters_available_in_pool;
-        
-        int home_position_x, home_position_y;
-        int robot_id, number_of_robots;
-        int frontier_selection, costmap_width, global_costmap_iteration, number_unreachable_frontiers_for_cluster;
-        int counter_waiting_for_clusters;
-        
-        double robot_home_position_x, robot_home_position_y, costmap_resolution;
-        bool Simulation, goal_determined;
-        bool robot_prefix_empty;
-        int accessing_cluster, cluster_element_size, cluster_element;
-        int global_iterattions;
-        bool cluster_flag, cluster_initialize_flag;
-        int global_iterations_counter; 
-        int waitForResult;
-        std::string move_base_frame;
-        std::string robot_prefix;               /// The prefix for the robot when used in simulation
-        std::string robot_name;
-        const unsigned char* occupancy_grid_global;
-        const unsigned char* occupancy_grid_local;
-        
-        std::string csv_file, log_file;
-        std::string log_path;
-        std::fstream fs_csv, fs;
-                
-private:
-	
-	ros::Publisher pub_move_base;
-	ros::Publisher pub_Point;
-	ros::Publisher pub_home_Point;
-        ros::Publisher pub_frontiers;
-
-        ros::ServiceClient mm_log_client;
-        
-        ros::NodeHandle nh;
-        ros::Time time_start;
-
-	//Create a move_base_msgs to define a goal to steer the robot to
-	move_base_msgs::MoveBaseActionGoal action_goal_msg;
-	move_base_msgs::MoveBaseActionFeedback feedback_msgs;
-
-	//move_base::MoveBase simple_move_base;
-	geometry_msgs::PointStamped goalPoint;
-	geometry_msgs::PointStamped homePoint;
-
-	std::vector<geometry_msgs::PoseStamped> goals;
-	tf::Stamped<tf::Pose> robotPose;
-
-	explorationPlanner::ExplorationPlanner *exploration;       
-        
-	double x_val, y_val, home_point_x, home_point_y;
-	int seq, feedback_value, feedback_succeed_value, rotation_counter,
-			home_point_message, goal_point_message;
-	int counter;
-	bool pioneer, exploration_finished;
-};
-
+            
 int main(int argc, char **argv) {
 	/*
 	 * ROS::init() function needs argc and argv to perform
@@ -1748,7 +1675,7 @@ int main(int argc, char **argv) {
 	 * Create instance of Simple Navigation
 	 */
 	tf::TransformListener tf(ros::Duration(10));
-	Explorer simple(tf);
+	explorer::Explorer simple(tf);
 
 	/*
 	 * The ros::spin command is needed to wait for any call-back. This could for
@@ -1756,14 +1683,16 @@ int main(int argc, char **argv) {
 	 * message.
 	 */
 
-	boost::thread thr_explore(boost::bind(&Explorer::explore, &simple));	
+	boost::thread thr_explore(boost::bind(&explorer::Explorer::explore, &simple));	
 //        boost::thread thr_frontiers(boost::bind(&SimpleNavigation::frontiers, &simple));
         /*
          * The following thread is only necessary to log simulation results.
          * Otherwise it produces unused output.
          */
-        boost::thread thr_map(boost::bind(&Explorer::map_info, &simple));
-        
+        boost::thread thr_map(boost::bind(&explorer::Explorer::map_info, &simple));
+
+    explorationController::ExplorationController controller(simple);
+
         /*
          * FIXME
          * Which rate is required in order not to oversee

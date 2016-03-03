@@ -7,9 +7,10 @@
     <arg name="output" default="screen" />
     <arg name="robot_prefix" default="/robot_x" />
 
-    <arg name="mac" default="02:01:00:00:00:00" />
-    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00"/>
+    <arg name="mac" default="03:00:00:00:00:00" />
     
+    <arg name="sim_robot_macs" default="robot_0,02:00:00:00:00:00!robot_1,02:01:00:00:00:00!robot_2,02:02:00:00:00:00!robot_3,04:03:00:00:00:00!BASE,03:00:00:00:00:00"/>
+
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 
 	<include file="$(find adhoc_communication)/launch/adhoc_communication.launch">

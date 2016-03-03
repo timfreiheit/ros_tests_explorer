@@ -8,7 +8,8 @@
     <arg name="output" default="screen" />
 
     <arg name="mac" default="02:01:00:00:00:00" />
-    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00"/>
+    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00!robot_1,02:02:00:00:00:00!robot_2,03:03:00:00:00:00!robot_3,04:04:00:00:00:00!BASE,03:03:00:00:00:00"/>
+    
     
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 

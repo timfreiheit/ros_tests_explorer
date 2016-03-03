@@ -156,7 +156,7 @@ ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, st
     sub_position = nh_position.subscribe(robo_name+"/all_positions", 1000, &ExplorationPlanner::positionCallback, this);
    
     // TODO
-//    sub_robot = nh_robot.subscribe(robo_name+"/adhoc_communication/new_robot", 1000, &ExplorationPlanner::new_robot_callback, this);
+//    sub_robot = nh_robot.subscribe(robo_name+"/f/new_robot", 1000, &ExplorationPlanner::new_robot_callback, this);
     
     
 //    adhoc_communication::Auction auction_init_status_msg;
