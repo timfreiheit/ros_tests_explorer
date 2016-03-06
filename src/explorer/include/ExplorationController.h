@@ -18,13 +18,24 @@
 #include <adhoc_communication/MmPoint.h>
 #include <adhoc_communication/MmListOfPoints.h>
 #include <map_merger/TransformPoint.h>
+#include <Config.h>
+#include "Config.h"
 //#include <dynamic_reconfigure/server.h>
 
 namespace explorationController {
 
 	class ExplorationController {
 		public:
-			ExplorationController(explorer::Explorer& target);
+			ExplorationController(config::Config& c_, explorer::Explorer& target);
+			void explore();
+		private:
+			config::Config* c;
+			explorer::Explorer* explorer;
+
+			ros::NodeHandle nh_control;
+			ros::Subscriber sub_control;
+
+			void registerAdHocCommunication();
 	};
 
 }

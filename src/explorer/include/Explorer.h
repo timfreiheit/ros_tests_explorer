@@ -30,6 +30,8 @@
 #include <boost/filesystem.hpp>
 #include <map_merger/LogMaps.h>
 #include <nav_msgs/GetPlan.h>
+#include <Config.h>
+#include "Config.h"
 
 namespace explorer {
 
@@ -78,7 +80,7 @@ class Explorer {
         std::string log_path;
         std::fstream fs_csv, fs;
 
-		Explorer(tf::TransformListener& tf);
+		Explorer(config::Config & c, tf::TransformListener& tf);
 		void explore();
 		void frontiers();
 		void map_info();

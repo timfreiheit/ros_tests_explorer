@@ -122,7 +122,7 @@ FIND_PATH( #GOOGLEPERFTOOLS_INCLUDE_DIR google/heap-profiler.h
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a cpp library
-add_library(exploration_planner src/ExplorationPlanner.cpp src/ExplorationController.cpp)
+add_library(exploration_planner src/ExplorationPlanner.cpp src/ExplorationController.cpp src/Config.cpp)
 add_library(hungarian src/hungarian.cpp)
 add_library(munkres src/src/munkres.cpp)
 #add_library(matrix src/src/matrix.cpp)

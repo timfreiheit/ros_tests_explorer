@@ -48,7 +48,7 @@ template <typename T>
      return ss.str();
   }
 
-ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, std::string robot_name_parameter):
+ExplorationPlanner::ExplorationPlanner(config::Config& c):
 		costmap_ros_(0), occupancy_grid_array_(0), exploration_trans_array_(0), obstacle_trans_array_(
 				0), frontier_map_array_(0), is_goal_array_(0), map_width_(0), map_height_(
 				0), num_map_cells_(0), initialized_(false), last_mode_(
@@ -64,7 +64,9 @@ ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, st
                                 number_of_completed_auctions(0), number_of_uncompleted_auctions(0), first_run(true),
                                 first_negotiation_run(true), robot_prefix_empty_param(false){
     
-    
+    int robot_id = c.robot_id;
+    bool robot_prefix_empty = c.robot_prefix_empty;
+    std::string robot_name_parameter = c.robot_name;
     trajectory_strategy = "euclidean";
     robot_prefix_empty_param = robot_prefix_empty;
 

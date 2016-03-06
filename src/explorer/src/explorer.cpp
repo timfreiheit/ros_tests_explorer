@@ -29,6 +29,8 @@
 #include <boost/filesystem.hpp>
 #include <map_merger/LogMaps.h>
 #include <nav_msgs/GetPlan.h>
+#include <Config.h>
+#include "Config.h"
 
 #define forEach BOOST_FOREACH
 
@@ -51,7 +53,7 @@ void sleepok(int t, ros::NodeHandle &nh)
 using namespace explorer;
 
 
-    Explorer::Explorer(tf::TransformListener& tf) :
+    Explorer::Explorer(config::Config& c, tf::TransformListener& tf) :
         counter(0), rotation_counter(0), nh("~"), exploration_finished(false), number_of_robots(1), accessing_cluster(0), cluster_element_size(0),
         cluster_flag(false), cluster_element(-1), cluster_initialize_flag(false), global_iterattions(0), global_iterations_counter(0), 
         counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0) {
@@ -95,52 +97,9 @@ using namespace explorer;
                 std::string service = robot_prefix + std::string("/map_merger/logOutput");
                 mm_log_client = nh.serviceClient<map_merger::LogMaps>(service.c_str());
                 
-                if(robot_prefix.empty())
-                {
-                    char hostname_c[1024];
-                    hostname_c[1023] = '\0';
-                    gethostname(hostname_c, 1023);
-                    robot_name = std::string(hostname_c);
-                    
-                    // '-' is not allows as ros node name
-                    std::replace( robot_name.begin(), robot_name.end(), '-', '_');
-                    ROS_INFO("NO SIMULATION! Robot name: %s", robot_name.c_str());
-
-                                        
-                    /*
-                     * THIS IS REQUIRED TO PERFORM COORDINATED EXPLORATION
-                     * Assign numbers to robot host names in order to make
-                     * auctioning and frontier selection UNIQUE !!!!!
-                     * To use explorer node on a real robot system, add your robot names 
-                     * here and at ExplorationPlanner::lookupRobotName function ... 
-                     */
-                    std::string bob = "bob";
-                    std::string marley = "marley";
-                    std::string turtlebot = "turtlebot";
-                    std::string joy = "joy";
-                    std::string hans = "hans";
-                    
-                    if(robot_name.compare(turtlebot) == 0)
-                        robot_id = 0;
-                    if(robot_name.compare(joy) == 0)
-                        robot_id = 1;
-                    if(robot_name.compare(marley) == 0)
-                        robot_id = 2;
-                    if(robot_name.compare(bob) == 0)
-                        robot_id = 3;
-                    if(robot_name.compare(hans) == 0)
-                        robot_id = 4;
-               
-                    robot_prefix_empty = true;
-                    ROS_INFO("Robot name: %s    robot_id: %d", robot_name.c_str(), robot_id);
-                }else
-                {
-                    robot_name = robot_prefix;
-                    ROS_INFO("Move_base_frame: %s",move_base_frame.c_str());               
-                    robot_id = atoi(move_base_frame.substr(7,1).c_str());
-
-                    ROS_INFO("Robot: %d", robot_id);
-                } 
+                robot_prefix_empty = c.robot_prefix_empty;
+                robot_id = c.robot_id;
+                robot_name = c.robot_name;
                 /*
                  * If you want to operate only 1 robot but stage is operating 2
                  * then simply kill one of them.
@@ -223,7 +182,7 @@ using namespace explorer;
 
 
 		// instantiate the planner
-		exploration = new explorationPlanner::ExplorationPlanner(robot_id, robot_prefix_empty, robot_name);
+		exploration = new explorationPlanner::ExplorationPlanner(c);
                 
 		/*
 		 * Define the first Goal. This is required to have at least one entry
@@ -1662,7 +1621,6 @@ using namespace explorer;
             return true;
         }
     }
-
             
 int main(int argc, char **argv) {
 	/*
@@ -1675,7 +1633,10 @@ int main(int argc, char **argv) {
 	 * Create instance of Simple Navigation
 	 */
 	tf::TransformListener tf(ros::Duration(10));
-	explorer::Explorer simple(tf);
+    config::Config c;
+	explorer::Explorer simple(c, tf);
+
+    explorationController::ExplorationController controller(c, simple);
 
 	/*
 	 * The ros::spin command is needed to wait for any call-back. This could for
@@ -1683,15 +1644,13 @@ int main(int argc, char **argv) {
 	 * message.
 	 */
 
-	boost::thread thr_explore(boost::bind(&explorer::Explorer::explore, &simple));	
+	//boost::thread thr_explore(boost::bind(&explorer::Explorer::explore, &simple));	
 //        boost::thread thr_frontiers(boost::bind(&SimpleNavigation::frontiers, &simple));
         /*
          * The following thread is only necessary to log simulation results.
          * Otherwise it produces unused output.
          */
         boost::thread thr_map(boost::bind(&explorer::Explorer::map_info, &simple));
-
-    explorationController::ExplorationController controller(simple);
 
         /*
          * FIXME
@@ -1709,11 +1668,11 @@ int main(int argc, char **argv) {
             ros::Duration(0.1).sleep();
 	}
 
-	thr_explore.interrupt();
+	//thr_explore.interrupt();
         thr_map.interrupt();
 //	thr_frontiers.interrupt();
         
-        thr_explore.join();
+    //    thr_explore.join();
         thr_map.join();
 //        thr_frontiers.interrupt();
         

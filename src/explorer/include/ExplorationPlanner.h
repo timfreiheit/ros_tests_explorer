@@ -16,6 +16,7 @@
 #include <adhoc_communication/MmPoint.h>
 #include <adhoc_communication/MmListOfPoints.h>
 #include <map_merger/TransformPoint.h>
+#include "Config.h"
 //#include <dynamic_reconfigure/server.h>
 
 namespace explorationPlanner
@@ -189,7 +190,7 @@ namespace explorationPlanner
             std::vector<std::string> new_robots;
             int next_auction_position_x, next_auction_position_y;
             
-            ExplorationPlanner(int robot_id, bool robot_prefix_empty, std::string robot_name_parameter);
+            ExplorationPlanner(config::Config& c);
             void printFrontiers();
             bool respondToAuction(std::vector<requested_cluster_t> requested_cluster_ids, int auction_id_number);
             bool clusterIdToElementIds(int cluster_id, std::vector<transform_point_t>* occupied_ids);

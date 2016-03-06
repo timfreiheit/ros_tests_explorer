@@ -28,10 +28,23 @@
 #include <map_merger/LogMaps.h>
 #include <nav_msgs/GetPlan.h>
 #include "Explorer.h"
+#include "Config.h"
 
 using namespace explorationController;
 
 
-ExplorationController::ExplorationController(explorer::Explorer& target) {
+ExplorationController::ExplorationController(config::Config& c_, explorer::Explorer& target) {
+	explorer = &target;
+	c = &c_;
 
+	boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
+}
+
+
+void ExplorationController::explore() {
+	explorer->explore();
+}
+
+void registerAdHocCommunication() {
+	sub_control = nh_control.subscribe(robo_name+"/exp_control", 10000, &ExplorationPlanner::frontierCallback, this);
 }
