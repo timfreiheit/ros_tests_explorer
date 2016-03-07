@@ -89,6 +89,7 @@ ExplorationPlanner::ExplorationPlanner(config::Config& c):
         robo_name = "";
         robot_str = robot_name_parameter;
     }
+    robo_name = c.adhocCommunicationTopicPrefix();
     std::string sendFrontier_msgs = robo_name +"/adhoc_communication/send_frontier";
     std::string sendAuction_msgs  = robo_name +"/adhoc_communication/send_auction";
     
