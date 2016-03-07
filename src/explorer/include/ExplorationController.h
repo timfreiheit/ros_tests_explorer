@@ -14,7 +14,7 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <adhoc_communication/ExpFrontier.h> //<simple_navigation/Frontier.h>
 #include <adhoc_communication/ExpCluster.h>
-#include <adhoc_communication/ExpAuction.h>
+#include <adhoc_communication/ExpControl.h>
 #include <adhoc_communication/MmPoint.h>
 #include <adhoc_communication/MmListOfPoints.h>
 #include <map_merger/TransformPoint.h>
@@ -36,6 +36,7 @@ namespace explorationController {
 			ros::Subscriber sub_control;
 
 			void registerAdHocCommunication();
+			void controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg);
 	};
 
 }

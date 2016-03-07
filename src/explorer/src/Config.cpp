@@ -34,10 +34,13 @@ Config::Config(): nh("~") {
     ROS_INFO("robot prefix: \"%s\"", robot_prefix.c_str());
 
     setUpRobotId();
+	ROS_ERROR("Robot: %d", robot_id);
 
 }
 
 void Config::setUpRobotId() {
+
+	ROS_ERROR("[CONFIG]: setUpRobotId");
 
     std::string move_base_frame;
     nh.param<std::string>("move_base_frame",move_base_frame,"map"); 
@@ -86,57 +89,78 @@ void Config::setUpRobotId() {
             robot_id = 4;
         }
 
-        if(robot_name.compare("turtlebot_01")) {
+        if(robot_name.compare("turtlebot_01") == 0) {
         	robot_id = 5;
         }
 
-        if(robot_name.compare("turtlebot_02")) {
+        if(robot_name.compare("turtlebot_02") == 0) {
         	robot_id = 6;
         }
 
-        if(robot_name.compare("turtlebot_03")) {
+        if(robot_name.compare("turtlebot_03") == 0) {
         	robot_id = 7;
         }
 
-        if(robot_name.compare("turtlebot_04")) {
+        if(robot_name.compare("turtlebot_04") == 0) {
         	robot_id = 8;
         }
 
-        if(robot_name.compare("turtlebot_05")) {
+        if(robot_name.compare("turtlebot_05") == 0) {
         	robot_id = 9;
         }
 
-        if(robot_name.compare("turtlebot_06")) {
+        if(robot_name.compare("turtlebot_06") == 0) {
         	robot_id = 10;
         }
 
-        if(robot_name.compare("turtlebot_07")) {
-        	robot_id = 10;
-        }
-
-        if(robot_name.compare("turtlebot_08")) {
+        if(robot_name.compare("turtlebot_07") == 0) {
         	robot_id = 11;
         }
 
-        if(robot_name.compare("turtlebot_09")) {
+        if(robot_name.compare("turtlebot_08") == 0) {
         	robot_id = 12;
         }
 
-        if(robot_name.compare("turtlebot_10")) {
+        if(robot_name.compare("turtlebot_09") == 0) {
         	robot_id = 13;
         }
 
-        if(robot_name.compare("qbot")) {
+        if(robot_name.compare("turtlebot_10") == 0) {
         	robot_id = 14;
+        }
+
+        if(robot_name.compare("qbot") == 0) {
+        	robot_id = 15;
         }
                
         robot_prefix_empty = true;
         ROS_INFO("Robot name: %s    robot_id: %d", robot_name.c_str(), robot_id);
     } else {
-    	robot_name = robot_prefix;
-    	ROS_INFO("Move_base_frame: %s",move_base_frame.c_str());               
-    	robot_id = atoi(move_base_frame.substr(7,1).c_str());
-
-	    ROS_INFO("Robot: %d", robot_id);
+        if(robot_name.compare("BASE") == 0) {
+        	robot_id = -1;
+        } else {
+    		robot_name = robot_prefix;
+    		ROS_INFO("robot_prefix: %s",robot_prefix.c_str());               
+    		robot_id = atoi(robot_prefix.substr(7,1).c_str());
+		}
+		robot_id++;
+		robot_prefix_empty = false;
     } 
+}
+
+
+std::string Config::adhocCommunicationTopicPrefix() {
+
+    std::stringstream robot_number;
+    robot_number << robot_id;
+
+    std::string prefix = "/robot_";
+    std::string robo_name = prefix.append(robot_number.str());   
+    
+    if(robot_prefix_empty == true) {
+        /*NO SIMULATION*/
+        robo_name = "";
+    }
+
+    return robo_name; 
 }

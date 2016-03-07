@@ -45,6 +45,11 @@ void ExplorationController::explore() {
 	explorer->explore();
 }
 
-void registerAdHocCommunication() {
-	sub_control = nh_control.subscribe(robo_name+"/exp_control", 10000, &ExplorationPlanner::frontierCallback, this);
+void ExplorationController::registerAdHocCommunication() {
+	sub_control = nh_control.subscribe(c->adhocCommunicationTopicPrefix()+"/exp_control", 10000, &ExplorationController::controlCallback, this);
 }
+
+void ExplorationController::controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg) {
+    ROS_ERROR("----------------  RECEIVED CONTROL MESSAGE !!!!! ----------------------------");
+}
+

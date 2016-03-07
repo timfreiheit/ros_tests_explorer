@@ -158,7 +158,7 @@ ExplorationPlanner::ExplorationPlanner(config::Config& c):
     sub_position = nh_position.subscribe(robo_name+"/all_positions", 1000, &ExplorationPlanner::positionCallback, this);
    
     // TODO
-//    sub_robot = nh_robot.subscribe(robo_name+"/f/new_robot", 1000, &ExplorationPlanner::new_robot_callback, this);
+//    sub_robot = nh_robot.subscribe(robo_name+"/adhoc_communication/new_robot", 1000, &ExplorationPlanner::new_robot_callback, this);
     
     
 //    adhoc_communication::Auction auction_init_status_msg;
@@ -1162,7 +1162,7 @@ bool ExplorationPlanner::storeFrontier(double x, double y, int detected_by_robot
         {
            new_frontier.id = (robot_name * 10000) + frontier_id_count++; 
         }
-
+        
         new_frontier.detected_by_robot = detected_by_robot;
         new_frontier.x_coordinate = x;
         new_frontier.y_coordinate = y;
@@ -5143,24 +5143,21 @@ void ExplorationPlanner::visualize_Frontiers()
                         
             marker.color.a = 1.0;
             
-            if(frontiers.at(i).detected_by_robot == robot_name)
-            {                  
+            if(frontiers.at(i).detected_by_robot == robot_name) {                  
                 marker.color.r = 1.0;
                 marker.color.g = 0.0;
                 marker.color.b = 0.0;               
-            }
-            if(frontiers.at(i).detected_by_robot == 1)
-            {
+            } else if(frontiers.at(i).detected_by_robot == 1) {
                 marker.color.r = 0.0;
                 marker.color.g = 1.0;
                 marker.color.b = 0.0;
-            }  
-            if(frontiers.at(i).detected_by_robot == 2)
-            {
+            } else if(frontiers.at(i).detected_by_robot == 2) {
                 marker.color.r = 0.0;
                 marker.color.g = 0.0;
                 marker.color.b = 1.0;
-            }  
+            } else {
+                ROS_ERROR("FRONTIER_detected_by_robot \"%d\" me: \"%d\"", frontiers.at(i).detected_by_robot, robot_name);
+            }
             
             markerArray.markers.push_back(marker);              
         }
