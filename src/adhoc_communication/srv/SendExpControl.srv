@@ -1,5 +1,5 @@
 string topic
 string dst_robot
-adhoc_communication/ExpControl auction
+adhoc_communication/ExpControl control
 ---
 uint8 status

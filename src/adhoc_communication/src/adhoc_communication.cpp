@@ -523,7 +523,7 @@ bool sendExplorationControl(adhoc_communication::SendExpControl::Request &req, a
 
     ROS_DEBUG("Service called to send ExplorationControl..");
 
-    string s_msg = getSerializedMessage(req.auction);
+    string s_msg = getSerializedMessage(req.control);
     res.status = sendPacket(req.dst_robot, s_msg, FRAME_DATA_TYPE_EXPLORATION_CONTROL, req.topic);
 
 #ifdef PERFORMANCE_LOGGING_SERVICE_CALLS

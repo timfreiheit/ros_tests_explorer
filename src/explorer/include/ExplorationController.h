@@ -20,6 +20,7 @@
 #include <map_merger/TransformPoint.h>
 #include <Config.h>
 #include "Config.h"
+#include "Constants.h"
 //#include <dynamic_reconfigure/server.h>
 
 namespace explorationController {
