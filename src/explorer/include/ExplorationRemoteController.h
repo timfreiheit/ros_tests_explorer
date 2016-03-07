@@ -4,6 +4,7 @@
 #include "ros/ros.h"
 #include <ros/console.h>
 #include <std_msgs/String.h>
+#include <Config.h>
 #include "Config.h"
 
 namespace explorationRemoteController {
@@ -12,6 +13,9 @@ namespace explorationRemoteController {
 		public:
 			ExplorationRemoteController(config::Config& c);
 		private:
+			config::Config* c;
+            ros::NodeHandle *nh_service;
+            ros::ServiceClient ssendExpControl;
 	};
 
 }

@@ -38,6 +38,8 @@ ExplorationController::ExplorationController(config::Config& c_, explorer::Explo
 	c = &c_;
 
 	boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
+
+	registerAdHocCommunication();
 }
 
 
