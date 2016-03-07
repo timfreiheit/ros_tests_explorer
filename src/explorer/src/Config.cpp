@@ -126,13 +126,14 @@ void Config::setUpRobotId() {
 
 
 std::string Config::adhocCommunicationTopicPrefix() {
-
+/*
     std::stringstream robot_number;
     robot_number << robot_id;
 
     std::string prefix = "/robot_";
     std::string robo_name = prefix.append(robot_number.str());   
-    
+    */
+    std::string robo_name = robot_prefix;
     if(robot_prefix_empty == true) {
         /*NO SIMULATION*/
         robo_name = "";

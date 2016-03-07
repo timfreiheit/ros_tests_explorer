@@ -57,12 +57,20 @@ bool ExplorationRemoteController::sendControlMessage(adhoc_communication::ExpCon
 
             
 int main(int argc, char **argv) {
+	/*
+	 * ROS::init() function needs argc and argv to perform
+	 * any argument and remapping that is provided by the
+	 * command line. The third argument is the name of the node
+	 */
+	ros::init(argc, argv, "explorationRemoteController");
 
 	config::Config config;
 	explorationRemoteController::ExplorationRemoteController controller(config);
 
 	int action = EXP_CONTROL_START;
+    ros::spinOnce();
  	for (std::string line; std::getline(std::cin, line);) {
+        ros::spinOnce();
     	std::cout << line << std::endl;
 
     	adhoc_communication::ExpControl control_msgs;	
