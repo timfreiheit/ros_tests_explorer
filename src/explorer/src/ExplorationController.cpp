@@ -29,6 +29,7 @@
 #include <nav_msgs/GetPlan.h>
 #include "Explorer.h"
 #include "Config.h"
+#include "Constants.h"
 
 using namespace explorationController;
 
@@ -37,14 +38,15 @@ ExplorationController::ExplorationController(config::Config& c_, explorer::Explo
 	explorer = &target;
 	c = &c_;
 
-	boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
+//	boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
 
 	registerAdHocCommunication();
 }
 
 
 void ExplorationController::explore() {
-	explorer->explore();
+    	ROS_ERROR("----------------  Start explore ----------------------------");
+	explorer->explore(exploreDistanceFromHome);
 }
 
 void ExplorationController::registerAdHocCommunication() {
@@ -53,5 +55,17 @@ void ExplorationController::registerAdHocCommunication() {
 
 void ExplorationController::controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg) {
     ROS_ERROR("----------------  RECEIVED CONTROL MESSAGE !!!!! ----------------------------");
+    ROS_ERROR("----------------  STATUS: Running: %d ----------------------------", explorer->running);
+    if (msg.get()->action == EXP_CONTROL_START) {
+    	ROS_ERROR("----------------  MESSAGE: START EXPLORATION !!!!! ---------------------------- distance: %d", msg.get()->exploreDistanceFromHome);
+    	if (explorer->running == false) {
+    		exploreDistanceFromHome = msg.get()->exploreDistanceFromHome;
+			boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
+			explorer->running = true;
+    	}
+    } else if (msg.get()->action == EXP_CONTROL_STOP) {
+    	ROS_ERROR("----------------  MESSAGE: STOP EXPLORATION !!!!! ----------------------------");
+    	explorer->exploration_finished = true;
+    }
 }
 

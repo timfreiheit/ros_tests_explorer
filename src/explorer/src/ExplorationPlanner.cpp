@@ -1136,6 +1136,19 @@ bool ExplorationPlanner::storeFrontier(double x, double y, int detected_by_robot
 {
     frontier_t new_frontier;
     
+    // check if frontier is inside of the exploration bounds
+    if (exploreDistanceFromHome > 0) {
+        int diff_x = x - robot_home_x;
+        int diff_y = y - robot_home_y;
+        double distance = sqrt( (diff_x * diff_x) + (diff_y * diff_y) );
+
+        int distanceInt = (int) (distance + 0.5);
+        if (exploreDistanceFromHome < distanceInt) {
+            ROS_ERROR("DROP FRONTIER: distance %d", distanceInt);
+            return false;
+        }
+    }
+    
     if(robot_prefix_empty_param == true)
     {        
         ROS_DEBUG("Storing Frontier ID: %d   Robot: %s", id, detected_by_robot_str.c_str());

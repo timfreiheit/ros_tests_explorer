@@ -35,6 +35,7 @@ namespace explorationController {
 
 			ros::NodeHandle nh_control;
 			ros::Subscriber sub_control;
+			int exploreDistanceFromHome;
 
 			void registerAdHocCommunication();
 			void controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg);

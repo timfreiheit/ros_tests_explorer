@@ -80,8 +80,9 @@ class Explorer {
         std::string log_path;
         std::fstream fs_csv, fs;
 
+
 		Explorer(config::Config & c, tf::TransformListener& tf);
-		void explore();
+		void explore(int exploreDistanceFromHome);
 		void frontiers();
 		void map_info();
 		int global_costmap_size();
@@ -92,6 +93,7 @@ class Explorer {
 		void indicateSimulationEnd();
 		bool iterate_global_costmap(std::vector<double> *global_goal, std::vector<std::string> *robot_str);
 		bool navigate(std::vector<double> goal);
+		bool navigateHome();
 		void visualize_goal_point(double x, double y);
 		void visualize_home_point();
 		bool move_robot(int seq, double position_x, double position_y);
@@ -129,7 +131,8 @@ class Explorer {
 		int seq, feedback_value, feedback_succeed_value, rotation_counter,
 				home_point_message, goal_point_message;
 		int counter;
-		bool pioneer, exploration_finished;
+		bool pioneer, exploration_finished, running;
+
 	};
 
 }

@@ -22,7 +22,7 @@
             <arg name="use_sim_time" value="$(arg use_sim_time)" />
             <arg name="mac" value="$(arg mac)" />
             <!--<arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />-->
-            <arg name="output" value="screen" />
+            <arg name="output" value="log" />
         </include>
     
         <include file="$(find map_merger)/launch/map_merger.launch">

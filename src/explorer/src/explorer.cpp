@@ -56,7 +56,7 @@ using namespace explorer;
     Explorer::Explorer(config::Config& c, tf::TransformListener& tf) :
         counter(0), rotation_counter(0), nh("~"), exploration_finished(false), number_of_robots(1), accessing_cluster(0), cluster_element_size(0),
         cluster_flag(false), cluster_element(-1), cluster_initialize_flag(false), global_iterattions(0), global_iterations_counter(0), 
-        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0) {
+        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0), running(false) {
 
         
                 nh.param("frontier_selection",frontier_selection,1); 
@@ -207,8 +207,7 @@ using namespace explorer;
 	}
 
 
-	void Explorer::explore() 
-        {
+	void Explorer::explore(int exploreDistanceFromHome) {
 		/*
 		 * Sleep is required to get the actual 
 		 * costmap updated with obstacle and inflated 
@@ -229,12 +228,13 @@ using namespace explorer;
                 time_start = ros::Time::now();
                 
                 
-		while (exploration_finished == false) 
-                {
-                    Simulation == false; 
-                    if(Simulation == false)
-                    {
+        exploration->exploreDistanceFromHome = exploreDistanceFromHome;
+        running = true;
+        exploration_finished = false;
+		while (exploration_finished == false) {
+                if(Simulation == false) {
                         /*
+                Simulation == false; 
                          * *****************************************************
                          * FRONTIER DETERMINATION
                          * *****************************************************
@@ -277,6 +277,11 @@ using namespace explorer;
                             exploration->publish_frontier_list();  
                             exploration->publish_visited_frontier_list();  
 
+                            if (exploration->frontiers.size() == 0) {
+                                navigateHome();
+                                exploration_finished = true;
+                                continue;
+                            }
                             /*
                              * Sleep to ensure that frontiers are exchanged
                              */
@@ -739,6 +744,8 @@ using namespace explorer;
 			ROS_DEBUG("                                             ");
                         ROS_DEBUG("                                             ");
 		}
+        // END WHILE
+        running = false;
 	}         
            
         void Explorer::frontiers()
@@ -1286,30 +1293,7 @@ using namespace explorer;
 //                                global_iterations_counter++;
 //                                if(global_iterations_counter >= 5)
 //                                {
-                                    counter++;
-                                    ROS_INFO("GOAL %d: BACK TO HOME   x: %f    y: %f", counter, home_point_x, home_point_y);
-                                    
-                                    /*
-                                     * If the robot should drive to the home position
-                                     * exploration_has_finished() has to be uncommented. 
-                                     * It creates a file which is the immediate trigger to 
-                                     * shut down the ros_node. Therefore the navigation process
-                                     * is canceled . 
-                                     */
-                                    exploration_has_finished();
-                                    visualize_goal_point(home_point_x, home_point_y);
-                                    completed_navigation = false;
-                                    for(int i = 0; i< 5; i++)
-                                    {
-                                        if(completed_navigation == false)
-                                        {
-                                           completed_navigation = move_robot(counter, home_point_x, home_point_y); 
-                                        }
-                                        else
-                                        {
-                                            break;
-                                        }                                       
-                                    }
+                                    completed_navigation = navigateHome();
                                     
                                     exploration_finished = true;
 //                                }else
@@ -1362,6 +1346,30 @@ using namespace explorer;
 		}      
                 return(completed_navigation);
 	}
+
+    bool Explorer::navigateHome() {
+        counter++;
+        ROS_INFO("GOAL %d: BACK TO HOME   x: %f    y: %f", counter, home_point_x, home_point_y);
+                                    
+        /*
+         * If the robot should drive to the home position
+         * exploration_has_finished() has to be uncommented. 
+         * It creates a file which is the immediate trigger to 
+         * shut down the ros_node. Therefore the navigation process
+         * is canceled . 
+         */
+        exploration_has_finished();
+        visualize_goal_point(home_point_x, home_point_y);
+        bool completed_navigation = false;
+        for(int i = 0; i< 5; i++){
+            if(completed_navigation == false) {
+               completed_navigation = move_robot(counter, home_point_x, home_point_y); 
+            } else {
+                break;
+            }                                       
+        }
+        return completed_navigation;
+    }
 
 	void Explorer::visualize_goal_point(double x, double y) {
 

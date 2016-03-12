@@ -75,10 +75,13 @@ int main(int argc, char **argv) {
 
     	adhoc_communication::ExpControl control_msgs;	
         control_msgs.action = action;
+        control_msgs.exploreDistanceFromHome = 5;
 
         if (action == EXP_CONTROL_START) {
+        	std::cout << "Start exploration";
         	action = EXP_CONTROL_STOP;
         } else {
+        	std::cout << "Stop exploration";
         	action = EXP_CONTROL_START;
         }
 
