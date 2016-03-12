@@ -14,7 +14,7 @@ namespace explorationRemoteController {
 	class ExplorationRemoteController {
 		public:
 			ExplorationRemoteController(config::Config& c);
-			bool sendControlMessage(adhoc_communication::ExpControl control_to_send);
+			bool sendControlMessage(std::string target, adhoc_communication::ExpControl control_to_send);
 		private:
 			config::Config* c;
             ros::NodeHandle *nh_service;

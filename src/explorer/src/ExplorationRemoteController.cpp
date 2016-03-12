@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <iostream>
+#include <boost/algorithm/string.hpp>
 
 using namespace explorationRemoteController;
 
@@ -28,14 +29,14 @@ ExplorationRemoteController::ExplorationRemoteController(config::Config& c_) {
     ssendExpControl = nh_service->serviceClient<adhoc_communication::SendExpControl>(sendExpControl_msgs);
 }
 
-bool ExplorationRemoteController::sendControlMessage(adhoc_communication::ExpControl control_to_send) {
+bool ExplorationRemoteController::sendControlMessage(std::string target, adhoc_communication::ExpControl control_to_send) {
 
 	std::string topic = "exp_control";
 
 	adhoc_communication::SendExpControl service_control; // create request of type any+
     
     ROS_INFO("sending auction to multicast group on topic '%s'", topic.c_str());
-    service_control.request.dst_robot = "mc_"; 
+    service_control.request.dst_robot = target; 
     service_control.request.control = control_to_send;
     service_control.request.topic = topic;
 
@@ -55,7 +56,26 @@ bool ExplorationRemoteController::sendControlMessage(adhoc_communication::ExpCon
     }
 }
 
-            
+       
+std::vector<std::string> parseCommand(std::string line) {
+	std::vector<std::string> parts;
+	boost::split(parts, line, boost::is_any_of("\t "));
+
+	std::vector<std::string> strs;
+	for (int i=0; i < parts.size(); i++) {
+		std::string part = parts[i];
+		if (part.length() <= 0) {
+			continue;
+		} 
+    	strs.push_back(part);
+    }
+
+	for (int i=0; i < strs.size(); i++) {
+    	std::cout << strs[i] << std::endl;
+    }
+    return strs;
+}
+
 int main(int argc, char **argv) {
 	/*
 	 * ROS::init() function needs argc and argv to perform
@@ -70,22 +90,59 @@ int main(int argc, char **argv) {
 	int action = EXP_CONTROL_START;
     ros::spinOnce();
  	for (std::string line; std::getline(std::cin, line);) {
+    	std::cout << std::endl << "Enter command: " << std::endl;
         ros::spinOnce();
-    	std::cout << line << std::endl;
+		adhoc_communication::ExpControl control_msgs;
+		std::string action = "";
+        std::string target = "mc_";
+        int distance = -1;
 
-    	adhoc_communication::ExpControl control_msgs;	
-        control_msgs.action = action;
-        control_msgs.exploreDistanceFromHome = 5;
-
-        if (action == EXP_CONTROL_START) {
-        	std::cout << "Start exploration";
-        	action = EXP_CONTROL_STOP;
+        std::vector<std::string> parts = parseCommand(line);
+        if (parts.size() <= 0) {
+        	continue;
+        }
+		
+		int index = 0;
+		
+        action = parts[index];
+        if (action.compare("start") == 0) {
+        	control_msgs.action = EXP_CONTROL_START;
+	        std::cout << "Start: ";
+        } else if (action.compare("stop") == 0) {
+        	control_msgs.action = EXP_CONTROL_STOP;
+	        std::cout << "Stop: ";
         } else {
-        	std::cout << "Stop exploration";
-        	action = EXP_CONTROL_START;
+        	std::cout << "unkown action: " << action; 
+        	continue;
         }
 
-    	controller.sendControlMessage(control_msgs);
+        index++;
+        if (parts.size() >= index + 1) {
+    		if (parts[index].compare("all") == 0) {
+    			target = "mc_";
+    		} else {
+    			target = parts[index];
+    		}
+    		index++;
+        }	
+
+        if (target.compare("mc_") == 0) {
+        	std::cout << "all ";
+        } else {
+        	std::cout << target << " ";	
+        }
+
+        // distance
+        if (parts.size() >= index + 1 && control_msgs.action != EXP_CONTROL_STOP) {
+        	try {
+				distance = atoi(parts[index].c_str());
+    			std::cout << "Distance: " << distance;
+        	} catch(...) {}
+        }
+        control_msgs.exploreDistanceFromHome = distance;
+        index++;
+
+    	controller.sendControlMessage(target, control_msgs);
     }
     return 0;
 }
