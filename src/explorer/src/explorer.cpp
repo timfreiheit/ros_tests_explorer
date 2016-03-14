@@ -56,7 +56,7 @@ using namespace explorer;
     Explorer::Explorer(config::Config& c, tf::TransformListener& tf) :
         counter(0), rotation_counter(0), nh("~"), exploration_finished(false), number_of_robots(1), accessing_cluster(0), cluster_element_size(0),
         cluster_flag(false), cluster_element(-1), cluster_initialize_flag(false), global_iterattions(0), global_iterations_counter(0), 
-        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0), running(false) {
+        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0), running(false), backToHome(false) {
 
         
                 nh.param("frontier_selection",frontier_selection,1); 
@@ -231,7 +231,7 @@ using namespace explorer;
         exploration->exploreDistanceFromHome = exploreDistanceFromHome;
         running = true;
         exploration_finished = false;
-		while (exploration_finished == false) {
+		while (exploration_finished == false || backToHome) {
                 if(Simulation == false) {
                         /*
                 Simulation == false; 
@@ -277,11 +277,13 @@ using namespace explorer;
                             exploration->publish_frontier_list();  
                             exploration->publish_visited_frontier_list();  
 
-                            if (exploration->frontiers.size() == 0) {
+                            if (exploration->frontiers.size() == 0 || backToHome) {
                                 navigateHome();
                                 exploration_finished = true;
+                                backToHome = false;
                                 continue;
                             }
+
                             /*
                              * Sleep to ensure that frontiers are exchanged
                              */

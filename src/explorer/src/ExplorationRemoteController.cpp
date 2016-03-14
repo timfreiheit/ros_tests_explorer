@@ -111,6 +111,9 @@ int main(int argc, char **argv) {
         } else if (action.compare("stop") == 0) {
         	control_msgs.action = EXP_CONTROL_STOP;
 	        std::cout << "Stop: ";
+        } else if (action.compare("pause") == 0) {
+        	control_msgs.action = EXP_CONTROL_PAUSE;
+	        std::cout << "Pause: ";
         } else {
         	std::cout << "unkown action: " << action; 
         	continue;

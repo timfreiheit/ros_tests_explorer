@@ -131,7 +131,7 @@ class Explorer {
 		int seq, feedback_value, feedback_succeed_value, rotation_counter,
 				home_point_message, goal_point_message;
 		int counter;
-		bool pioneer, exploration_finished, running;
+		bool pioneer, exploration_finished, running, backToHome;
 
 	};
 

@@ -54,18 +54,32 @@ void ExplorationController::registerAdHocCommunication() {
 }
 
 void ExplorationController::controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg) {
-    ROS_ERROR("----------------  RECEIVED CONTROL MESSAGE !!!!! ----------------------------");
+    ROS_ERROR("----------------  RECEIVED CONTROL MESSAGE ----------------------------");
     ROS_ERROR("----------------  STATUS: Running: %d ----------------------------", explorer->running);
     if (msg.get()->action == EXP_CONTROL_START) {
-    	ROS_ERROR("----------------  MESSAGE: START EXPLORATION !!!!! ---------------------------- distance: %d", msg.get()->exploreDistanceFromHome);
+    	ROS_ERROR("----------------  MESSAGE: START EXPLORATION ---------------------------- distance: %d", msg.get()->exploreDistanceFromHome);
     	if (explorer->running == false) {
     		exploreDistanceFromHome = msg.get()->exploreDistanceFromHome;
 			boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
 			explorer->running = true;
+    	} else {
+    		explorer->exploration->exploreDistanceFromHome = msg.get()->exploreDistanceFromHome;
     	}
+
     } else if (msg.get()->action == EXP_CONTROL_STOP) {
-    	ROS_ERROR("----------------  MESSAGE: STOP EXPLORATION !!!!! ----------------------------");
+    	ROS_ERROR("----------------  MESSAGE: STOP EXPLORATION ----------------------------");
+    	if (explorer->running == false) {
+    		// start explorer only to drive home
+    		exploreDistanceFromHome = 0;
+			boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
+			explorer->running = true;
+    	}
     	explorer->exploration_finished = true;
+    	explorer->backToHome = true;
+    } else if (msg.get()->action == EXP_CONTROL_PAUSE) {
+    	ROS_ERROR("----------------  MESSAGE: PAUSE EXPLORATION ----------------------------");
+    	explorer->exploration_finished = true;
+    	explorer->backToHome = false;		
     }
 }
 
