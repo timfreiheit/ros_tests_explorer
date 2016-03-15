@@ -1144,7 +1144,6 @@ bool ExplorationPlanner::storeFrontier(double x, double y, int detected_by_robot
 
         int distanceInt = (int) (distance + 0.5);
         if (exploreDistanceFromHome < distanceInt) {
-            ROS_ERROR("DROP FRONTIER: distance %d", distanceInt);
             return false;
         }
     }

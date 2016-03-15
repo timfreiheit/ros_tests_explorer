@@ -347,7 +347,7 @@ void MapMerger::callback_control(const adhoc_communication::MmControlConstPtr &m
 
 void MapMerger::callback_map_meta_data_local(const nav_msgs::MapMetaData::ConstPtr &msg)
 {
-    ROS_DEBUG("Got local map meta data");
+    ROS_INFO("Got local map meta data");
     map_width = msg.get()->width;
     map_height = msg.get()->height;
 
