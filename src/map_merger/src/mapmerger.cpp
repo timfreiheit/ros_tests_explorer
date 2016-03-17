@@ -852,7 +852,7 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
 
 void MapMerger::callback_got_position(const nav_msgs::Odometry::ConstPtr &msg)
 {
-    ROS_INFO("[MapMerger] callback_got_position");
+    ROS_DEBUG("[MapMerger] callback_got_position");
     //ROS_WARN("Got local position");
     geometry_msgs::Pose  tmp = msg.get()->pose.pose;
     cur_position->pose = tmp;
