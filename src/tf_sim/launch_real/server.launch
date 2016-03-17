@@ -33,4 +33,10 @@
         <param name="seconds_recompute_transform" value="25" />
     </include>
 
+    <node pkg="explorer" type="explorationRemoteController" name="explorerController" output="screen" respawn="true">
+        <param name="use_sim_time" value="$(arg use_sim_time)" />
+        <param name="robot_name" value="$(arg robot_name)" />
+        <param name="robot_prefix" value="$(arg robot_prefix)" />
+    </node>
+
 </launch>

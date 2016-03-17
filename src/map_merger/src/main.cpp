@@ -23,7 +23,13 @@ void handler(int sig) {
 
   // print out all the frames to stderr
   fprintf(stderr, "Error: signal %d:\n", sig);
+  fprintf(stdout, "Error: signal %d:\n", sig);
   backtrace_symbols_fd(array, size, STDERR_FILENO);
+
+  for (int i=0;i<10;i++) {
+    printf("%s\n", (char*) array[i]);
+  }
+
   exit(1);
 }
 

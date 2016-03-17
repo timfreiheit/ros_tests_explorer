@@ -1895,6 +1895,7 @@ void ExplorationPlanner::positionCallback(const adhoc_communication::MmListOfPoi
 
 void ExplorationPlanner::auctionCallback(const adhoc_communication::ExpAuction::ConstPtr& msg)
 {
+    ROS_INFO("auctionCallback");
     auction_running = true;
     //ROS_ERROR("CALLING AUCTION CALLBACK!!!!!!!!!!!!");
     int robots_int_name;
@@ -2755,7 +2756,7 @@ void ExplorationPlanner::clearUnreachableFrontiers()
 
 void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_costmap)
 {
-//    ROS_INFO("Clear Seen");
+    ROS_INFO("Clear Seen");
     unsigned int mx, my, point;
     std::vector<int> neighbours, goals_to_clear;
        
@@ -2787,7 +2788,7 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
 
             neighbours = getMapNeighbours(mx, my, 6);
             
-//            ROS_INFO("Neighbours: %lu", neighbours.size());
+            ROS_INFO("Neighbours: %lu", neighbours.size());
             for (int j = 0; j < neighbours.size()/2; j++)
             {
 
@@ -2817,6 +2818,7 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
 //                ROS_INFO("Done");
             } 
 
+            ROS_INFO("TEMP: TEST");
             if(unknown_found == false || obstacle_found == true || freespace_found == false)
             {
 
@@ -2848,6 +2850,7 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
 //            removeStoredFrontier(goals_to_clear.at(i)); 
 //        }
     }
+    ROS_INFO("end Clear Seen");
 }
 
 bool ExplorationPlanner::smartGoalBackoff(double x, double y, costmap_2d::Costmap2DROS *global_costmap, std::vector<double> *new_goal)
