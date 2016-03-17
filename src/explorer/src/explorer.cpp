@@ -1365,7 +1365,10 @@ using namespace explorer;
         bool completed_navigation = false;
         for(int i = 0; i< 5; i++){
             if(completed_navigation == false) {
-               completed_navigation = move_robot(counter, home_point_x, home_point_y); 
+                // reset finish flag to prevent the move_robot method to cancel the goal
+                exploration_finished = false;
+                completed_navigation = move_robot(counter, home_point_x, home_point_y); 
+                exploration_finished = true;
             } else {
                 break;
             }                                       
