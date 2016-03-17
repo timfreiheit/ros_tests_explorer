@@ -1426,7 +1426,7 @@ using namespace explorer;
 		 * transmitted to the robot and feedback is given about the actual
 		 * driving state of the robot.
 		 */
-                if (!costmap2d_local->getRobotPose(robotPose)) {
+        if (!costmap2d_local->getRobotPose(robotPose)) {
 			ROS_ERROR("Failed to get RobotPose");
 		}
                 
@@ -1453,14 +1453,22 @@ using namespace explorer;
                
         //ac.waitForResult(ros::Duration(20)); EDIT Peter: Test if it also works with smaller value!
         ac.waitForResult(ros::Duration(waitForResult)); //here Parameter!
-        while (ac.getState() == actionlib::SimpleClientGoalState::PENDING)
-        {
+        while (ac.getState() == actionlib::SimpleClientGoalState::PENDING) {
+            if (exploration_finished) {
+                // cancel navigation
+                ac.cancelGoal();
+                return true;
+            }
             ros::Duration(0.5).sleep();
         }
 		ROS_INFO("Not longer PENDING");
 
-	while (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE)
-        {
+	   while (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE) {
+            if (exploration_finished) {
+                // cancel navigation
+                ac.cancelGoal();
+                return true;
+            }
             ros::Duration(0.5).sleep();
         }
 		ROS_INFO("Not longer ACTIVE");
@@ -1498,7 +1506,7 @@ using namespace explorer;
 		
                 double angle = 45;
 
-                if (!costmap2d_local->getRobotPose(robotPose)) {
+        if (!costmap2d_local->getRobotPose(robotPose)) {
 			ROS_ERROR("Failed to get RobotPose");
 		}
                 
@@ -1524,16 +1532,22 @@ using namespace explorer;
 		ac.sendGoal(goal_msgs);
 		ac.waitForResult(ros::Duration(waitForResult));
 
-		while (ac.getState() == actionlib::SimpleClientGoalState::PENDING)
-                {
-                    ros::Duration(0.5).sleep();
-                }
+		while (ac.getState() == actionlib::SimpleClientGoalState::PENDING) {
+            if (exploration_finished) {
+                ac.cancelGoal();
+                return true;
+            }
+            ros::Duration(0.5).sleep();
+        }
 		ROS_INFO("Not longer PENDING");
 
-		while (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE)
-                {
-                    ros::Duration(0.5).sleep();
-                }
+		while (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE) {
+            if (exploration_finished) {
+                ac.cancelGoal();
+                return true;
+            }
+            ros::Duration(0.5).sleep();
+        }
 		ROS_INFO("Not longer ACTIVE");
 
 		while (ac.getState() != actionlib::SimpleClientGoalState::SUCCEEDED) {
