@@ -12,7 +12,7 @@ define hokuyo ranger
 	sensor
 	( 			
 		range [ 0.1  25.6 ]	#Range 0.1-5.6m
-		fov 180				#180 degree	
+		fov 180				#90 degree	
 		samples 500			#0.36 degress angular res
 	)
 )
@@ -21,7 +21,7 @@ define hokuyo ranger
 define robot position
 (
 	#Body shape (approcimate cylinder with 0.4m diameter and 0.55m tall)
-	size [0.4 0.4 0.55]
+	size [0.3 0.3 0.55]
 	block
 	(
 		points 8
@@ -76,14 +76,14 @@ window
 floorplan
 ( 
   name "uni"
-  bitmap "../../tf_maps/maps/Uni2.pgm" #<------------EDIT MAP FILE HERE
-  size [150 75 1]
+  bitmap "../../tf_maps/maps/Uni2_window.pgm" #<------------EDIT MAP FILE HERE
+  size [75 38 1]
 )
 
 #Add the robots
 # pose [x y z rotation]
-robot( pose [ 70 -1 0 180 ] name "robot_0" color "yellow")
-robot( pose [ 70 -3 0 180 ] name "robot_1" color "blue")
+robot( pose [ 36 2 0 145 ] name "robot_0" color "yellow")
+robot( pose [ 36 4 0 145 ] name "robot_1" color "blue")
 #robot( pose [ 2 -1 0 1 ] name "robot_2" color "orange")
 #robot( pose [ 2 -3 0 45 ] name "robot_3" color "green")
 #robot( pose [ -18 -29.0 0 45 ] name "robot_4" color "red")

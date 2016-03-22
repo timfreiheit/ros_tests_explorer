@@ -441,7 +441,7 @@ bool getRoute(routing_entry& r, std::string hostname)
 
 void socketSend(string network_string)
 {
-    sendto(raw_socket, network_string.data(), network_string.length(), 0, (struct sockaddr*) &socket_address, sizeof (socket_address));
+    int result = sendto(raw_socket, network_string.data(), network_string.length(), 0, (struct sockaddr*) &socket_address, sizeof (socket_address));
 
 #ifdef DELAY
 

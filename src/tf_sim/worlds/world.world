@@ -12,7 +12,7 @@ define hokuyo ranger
 	sensor
 	( 			
 		range [ 0.1  25.6 ]	#Range 0.1-5.6m
-		fov 180				#180 degree	
+		fov 180				#90 degree	
 		samples 500			#0.36 degress angular res
 	)
 )
@@ -77,12 +77,9 @@ floorplan
 ( 
   name "broun"
   #bitmap "../../tf_maps/maps/test_map_border.pgm" #<------------EDIT MAP FILE HERE
-  #bitmap "../../tf_maps/maps/office.pgm" #<------------EDIT MAP FILE HERE
+  bitmap "../../tf_maps/maps/office.pgm" #<------------EDIT MAP FILE HERE
   #bitmap "../../tf_maps/maps/drawn_map.pgm" #<------------EDIT MAP FILE HERE
-  #size [40 65.6 1]
-
-  bitmap "../../tf_maps/maps/Uni2.pgm" #<------------EDIT MAP FILE HERE
-  size [200 100 1]
+  size [40 65.6 1]
 )
 
 #Add the robots

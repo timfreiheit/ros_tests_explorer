@@ -35,7 +35,7 @@ bool ExplorationRemoteController::sendControlMessage(std::string target, adhoc_c
 
 	adhoc_communication::SendExpControl service_control; // create request of type any+
     
-    ROS_INFO("sending auction to multicast group on topic '%s'", topic.c_str());
+    ROS_INFO("");
     service_control.request.dst_robot = target; 
     service_control.request.control = control_to_send;
     service_control.request.topic = topic;
@@ -44,10 +44,10 @@ bool ExplorationRemoteController::sendControlMessage(std::string target, adhoc_c
         ROS_ERROR("Successfully called service sendToMulticast");
 
         if(service_control.response.status) {
-            ROS_ERROR("Auction was multicasted successfully.");
+            ROS_ERROR("Control was multicasted successfully.");
             return true;
         } else {
-            ROS_WARN("Failed to send auction to mutlicast group!");
+            ROS_WARN("Failed to send control to mutlicast group!");
             return false;
         }                  
     } else {
