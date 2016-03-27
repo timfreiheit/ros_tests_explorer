@@ -25,7 +25,7 @@ MapMerger::MapMerger()
     updateMan = new updateManager();
 
     positions = new adhoc_communication::MmListOfPoints();
-    //since_last_trans_try = 0;
+    //since_last_tranfs_try = 0;
     map_data = new std::vector<nav_msgs::OccupancyGrid*>();
     robots = new std::vector<std::string>();
     transforms = new std::vector<cv::Mat>();
@@ -593,12 +593,27 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
     ROS_DEBUG("Check if map changed");
     //+=2 because nearly no differnce to +=1 but lowers number
     //of iterations per 75%
+
+    int sizeNew = local_map->info.height * local_map->info.width;
+    int sizeOld = local_map_old->info.height * local_map_old->info.width;
+            
+
     for(int row = 0; row < local_map->info.height;row+=2)
     {
         for(int collum = 0; collum < local_map->info.width;collum+=2)
         {
             index = row*local_map->info.width + collum;
-            if(local_map->data[index]!= local_map_old->data[index])
+
+            int dataNew = -3;
+            if (sizeNew > index) {
+                dataNew = local_map->data[index];
+            }
+
+            int dataOld = -2;
+            if (sizeOld > index) {
+                dataOld = local_map_old->data[index];
+            }
+            if(dataNew != dataOld)
             {
                 if(min_x > row)
                     min_x = row;
@@ -642,6 +657,7 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
     ROS_DEBUG("Sended local map over network,adding updateentry for update number:%i\n\t\t\tminx:%i\tmaxx:%i\tminy:%i\tmaxy:%i",local_map->header.seq,min_x,max_x,min_y,max_y);
     update_list->push_back(new UpdateEntry(update_seq,min_x,min_y,max_x,max_y));
     update_seq++;
+    //crash?
     if(local_map->data.size() != local_map_old->data.size())
     {
         ROS_FATAL("Local map changed size, not implemented yet");
@@ -705,7 +721,7 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
                 //          );
                 if(positions->positions.at(j).src_robot == source_host)
                 {
-                    ROS_DEBUG("Updating Position point for %s",name.c_str());
+                    ROS_INFO("[MapMerger] Updating Position point for %s",name.c_str());
                     addNew = false;
                     adhoc_communication::MmPoint  newPosition = positions->positions.at(j);
                     int index_transform = findTransformIndex(i);
@@ -772,7 +788,7 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
             //ROS_ERROR("after for");
             if(addNew)
             {
-                ROS_DEBUG("Adding new Position point for %s",name.c_str());
+                ROS_INFO("[MapMerger] Adding new Position point for %s",name.c_str());
                 adhoc_communication::MmPoint newPosition;// ();
                 newPosition.src_robot = source_host;
                 ROS_DEBUG("find trans");
@@ -847,6 +863,7 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
     tmp.header.frame_id = local_map_frame_id;
     robots_position_publisher->push_back(pub_robot);
     pub_robot.publish(tmp);*/
+    ROS_INFO("[MapMerger] end: callback_got_position_network");
     return;
 }
 
@@ -1249,6 +1266,7 @@ cv::Mat MapMerger::mapToMat(const nav_msgs::OccupancyGrid *map)
         }
     }
 
+    ROS_INFO("[MapMerger] end mapToMat");
     return im;
 }
 
@@ -1378,7 +1396,7 @@ void MapMerger::updateMapArea(int map_index, nav_msgs::OccupancyGrid *newData, b
     if(map_index > -1)
          tmp = map_data->at(map_index);
 
-    ROS_DEBUG("Updating map Area, new data from map:%s|x:%i|y:%i",newData->header.frame_id.c_str(),start_x,start_y);
+    ROS_INFO("[MapMerger] Updating map Area, new data from map:%s|x:%i|y:%i",newData->header.frame_id.c_str(),start_x,start_y);
     int width = newData->info.width;
     int height = newData->info.height;
     if(clear)
@@ -1399,6 +1417,7 @@ void MapMerger::updateMapArea(int map_index, nav_msgs::OccupancyGrid *newData, b
         }
     }
     tmp->header.frame_id = newData->header.frame_id;
+    ROS_INFO("[MapMerger] END: updateMapArea");
 }
 
 bool MapMerger::recomputeTransform(int mapDataIndex)

@@ -24,6 +24,7 @@
             <!--<arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />-->
             <arg name="output" value="log" />
         </include>
+    
     <!--
         <include file="$(find map_merger)/launch/map_merger.launch">
             <arg name="robot_name" value="$(arg robot_name)" />
@@ -32,11 +33,11 @@
             <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
             <arg name="use_sim_time" value="$(arg use_sim_time)" />
             <arg name="has_local_map" value="false"/>
-            <arg name="max_rotation_robots" value="10"/>
+            <arg name="max_rotation_robots" value="360"/>
             <param name="exchange_position" value="false" />
             <param name="seconds_recompute_transform" value="25" />
         </include>
--->
+    -->
 
         <node pkg="explorer" type="explorationRemoteController" name="explorerController" output="screen" respawn="true">
             <param name="use_sim_time" value="$(arg use_sim_time)" />

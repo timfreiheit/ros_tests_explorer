@@ -1409,6 +1409,11 @@ using namespace explorer;
 
 	bool Explorer::move_robot(int seq, double position_x, double position_y) {
 
+        if (calculatePlanDistance(home_point_x, home_point_y, position_x, position_y) > exploration->exploreDistanceFromHome
+            && exploration->exploreDistanceFromHome > 0) {
+            ROS_ERROR("cancel movement: travel distance to far");
+            return false;
+        }
 
         /*try {
             // check if there is a valid plan for this position
@@ -1453,27 +1458,59 @@ using namespace explorer;
 		goal_msgs.target_pose.pose.orientation.w = 1;
 
 		ac.sendGoal(goal_msgs);
-               
+         
+         int recalculateCounter = 0;
+
         //ac.waitForResult(ros::Duration(20)); EDIT Peter: Test if it also works with smaller value!
         ac.waitForResult(ros::Duration(waitForResult)); //here Parameter!
-        while (ac.getState() == actionlib::SimpleClientGoalState::PENDING) {
+        while (ac.getState() == actionlib::SimpleClientGoalState::PENDING
+            || ac.getState() == actionlib::SimpleClientGoalState::ACTIVE) {
+
             if (exploration_finished) {
                 // cancel navigation
                 ac.cancelGoal();
                 return true;
             }
-            ros::Duration(0.5).sleep();
+
+            recalculateCounter++;
+            if (recalculateCounter == 10 && exploration->exploreDistanceFromHome > 0) {
+                recalculateCounter = 0;
+                // move_base can not calculate plan while running
+                ac.cancelGoal();
+
+                while(ac.getState() == actionlib::SimpleClientGoalState::PENDING
+                    || ac.getState() == actionlib::SimpleClientGoalState::ACTIVE) {
+                    ros::Duration(0.5).sleep();
+                }
+                if (calculatePlanDistance(home_point_x, home_point_y, position_x, position_y) > exploration->exploreDistanceFromHome) {
+                    ROS_ERROR("cancel movement: travel distance to far");
+                    return false;
+                }
+                ac.sendGoal(goal_msgs);
+            }
+            ros::Duration(1).sleep();
         }
 		ROS_INFO("Not longer PENDING");
 
-	   while (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE) {
+	   /*while (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE) {
             if (exploration_finished) {
                 // cancel navigation
                 ac.cancelGoal();
                 return true;
             }
-            ros::Duration(0.5).sleep();
-        }
+
+            recalculateCounter++;
+            if (recalculateCounter % 10 == 0) {
+                // move_base can not calculate plan while running
+                ac.cancelGoal();
+                if (calculatePlanDistance(home_point_x, home_point_y, position_x, position_y) > exploration->exploreDistanceFromHome) {
+                    return false;
+                }
+                ac.sendGoal(goal_msgs);
+            }
+
+            ros::Duration(1).sleep();
+        }*/
 		ROS_INFO("Not longer ACTIVE");
 
 		while (ac.getState() != actionlib::SimpleClientGoalState::SUCCEEDED) {
@@ -1589,8 +1626,22 @@ using namespace explorer;
             for (int i = 0; i < exploration->frontiers.size(); i++) {
                 double diff_x = fabs(x - exploration->frontiers.at(i).x_coordinate);
                 double diff_y = fabs(y - exploration->frontiers.at(i).y_coordinate);
+
+
                 // TODO improve
                 if (diff_x > 0.5 && diff_x <= 10 && diff_y > 0.5 && diff_y <= 10) {
+
+                    if (calculatePlanDistance(home_point_x, home_point_y, exploration->frontiers.at(i).x_coordinate, exploration->frontiers.at(i).y_coordinate) > exploration->exploreDistanceFromHome
+                        && exploration->exploreDistanceFromHome > 0) {
+                        exploration->storeUnreachableFrontier(exploration->frontiers.at(i).x_coordinate,
+                                exploration->frontiers.at(i).y_coordinate,
+                                detected_by_robot,
+                                detected_by_robot_str,
+                                exploration->frontiers.at(i).id
+                        );
+                        continue;
+                    }
+
                     geometry_msgs::PoseStamped start;
                     start.header.seq = home_point_message++;
                     start.header.stamp = ros::Time::now();
@@ -1618,6 +1669,54 @@ using namespace explorer;
         } catch(...){
             ROS_ERROR("ERROR while checking plan");
         }
+    }
+
+    int Explorer::calculatePlanDistance(double startX, double startY, double goalX, double goalY) {
+
+        ROS_INFO("[Explorer] calculatePlanDistance");
+        nav_msgs::GetPlan plan;
+
+        geometry_msgs::PoseStamped start;
+        start.header.seq = home_point_message++;
+        start.header.stamp = ros::Time::now();
+        start.header.frame_id = move_base_frame;
+        start.pose.position.x = startX;
+        start.pose.position.y = startY;
+        plan.request.start = start;
+
+        geometry_msgs::PoseStamped goal;
+        goal.header.seq = home_point_message++;
+        goal.header.stamp = ros::Time::now();
+        goal.header.frame_id = move_base_frame;
+        goal.pose.position.x = goalX;
+        goal.pose.position.y = goalY;
+        plan.request.goal = goal;
+        if (ros::service::call("move_base/make_plan", plan)) {
+            ROS_ERROR("Called Service: make_plan");
+            int size = plan.response.plan.poses.size();
+
+            double distance = -1;
+
+            int x = startX;
+            int y = startY;
+            for (int i=0; i<size; i++) {
+                int x2 = plan.response.plan.poses[i].pose.position.x;
+                int y2 = plan.response.plan.poses[i].pose.position.y;
+
+                double diff_x = x - x2;
+                double diff_y = y - y2;
+                x = x2;
+                y = y2;
+                double distance2 = sqrt( (diff_x * diff_x) + (diff_y * diff_y) );
+
+                distance = distance + distance2;
+
+            }
+
+            ROS_ERROR("[Explorer] calculated Distance: %f", distance);
+            return (int) distance;
+        }            
+        return -1;
     }
 
     bool Explorer::checkIfFrontierIsReachable(double x, double y) {

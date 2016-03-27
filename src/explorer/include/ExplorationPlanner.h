@@ -253,6 +253,8 @@ namespace explorationPlanner
             bool sendToMulticast(std::string multi_cast_group, adhoc_communication::ExpFrontier frontier_to_send, std::string topic);
             bool sendToMulticastAuction(std::string multi_cast_group, adhoc_communication::ExpAuction auction_to_send, std::string topic);
             int exploreDistanceFromHome;
+
+            bool isPointInUnknownSpace(int x, int y);
         private:
 
             //Edit Peter

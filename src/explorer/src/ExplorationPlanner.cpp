@@ -2768,6 +2768,8 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
     
 //    ROS_INFO("Map origin  x: %f    y: %f", global_costmap->getCostmap()->getOriginX(), global_costmap->getCostmap()->getOriginY());
 //    ROS_INFO("Map size    x: %d    y: %d", global_costmap->getCostmap()->getSizeInCellsX(), global_costmap->getCostmap()->getSizeInCellsY());
+    int size = frontiers.size();
+    ROS_INFO("Frontiers: %d ", size);
     if(frontiers.size() > 1)
     {
         for(int i = 0; i < frontiers.size(); i++)
@@ -5737,6 +5739,12 @@ bool ExplorationPlanner::isFree(int point) {
 		ROS_ERROR("Point is not valid! Reason: negative number ");
 	}
 	return false;
+}
+
+
+bool ExplorationPlanner::isPointInUnknownSpace(int x, int y) {
+    int point =  x + map_height_ * y;
+    return occupancy_grid_array_[point] == costmap_2d::NO_INFORMATION;
 }
 
 inline bool ExplorationPlanner::isValid(int point) {

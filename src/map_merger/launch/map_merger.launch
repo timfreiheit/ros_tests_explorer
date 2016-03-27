@@ -10,8 +10,9 @@
 	<arg name="max_rotation_robots" default="5"/>
 	<arg name="has_local_map" default="true"/>
 
+	<arg name="launch_prefix" default=""/>
   
-	<node pkg="map_merger" type="map_merger" name="map_merger" output="$(arg output)" respawn="true" >
+	<node pkg="map_merger" type="map_merger" name="map_merger" output="$(arg output)" respawn="true" launch-prefix="$(arg launch_prefix)" >
    		<param name="log_path" value="$(arg log_path)" />
 		<param name="robot_name" value="$(arg robot_name)" />
 		<param name="robot_prefix" value="$(arg robot_prefix)" />
