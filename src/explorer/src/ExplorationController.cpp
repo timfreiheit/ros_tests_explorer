@@ -74,7 +74,7 @@ void ExplorationController::controlCallback(const adhoc_communication::ExpContro
 			boost::thread thr_explore(boost::bind(&ExplorationController::explore, this));	
 			explorer->running = true;
     	}
-    	explorer->exploration_finished = true;
+    	explorer->setExplorationFinished(true);
     	explorer->backToHome = true;
     } else if (msg.get()->action == EXP_CONTROL_PAUSE) {
     	ROS_ERROR("----------------  MESSAGE: PAUSE EXPLORATION ----------------------------");

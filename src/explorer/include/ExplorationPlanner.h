@@ -255,6 +255,8 @@ namespace explorationPlanner
             int exploreDistanceFromHome;
 
             bool isPointInUnknownSpace(int x, int y);
+
+            bool  exploration_finished;
         private:
 
             //Edit Peter

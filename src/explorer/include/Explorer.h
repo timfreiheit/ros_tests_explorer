@@ -103,6 +103,7 @@ class Explorer {
 		bool target_reached(void);
 		void storeUnreachableFrontier(double x, double y, int detected_by_robot, std::string detected_by_robot_str, int id);
 		bool checkIfFrontierIsReachable(double x, double y);
+		void setExplorationFinished(bool b);
 		int calculatePlanDistance(double startX, double startY, double goalX, double goal);
 
 		ros::Publisher pub_move_base;

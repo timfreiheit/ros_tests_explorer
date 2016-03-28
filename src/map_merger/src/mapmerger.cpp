@@ -687,6 +687,11 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
             delete map_to_merge;
             ROS_INFO("[MapMerger] Merged %i in map_data",i);
         }
+
+
+        local_map_old->data.resize(local_map->data.size());
+        local_map_old->header = local_map->header;
+        local_map_old->info = local_map->info;
         //exit(-2);
         ROS_INFO("[MapMerger] Managed map size change");
     }

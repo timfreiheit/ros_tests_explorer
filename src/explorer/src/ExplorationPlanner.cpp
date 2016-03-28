@@ -62,7 +62,7 @@ ExplorationPlanner::ExplorationPlanner(config::Config& c):
                                 start_thr_auction(false), auction_id_number(1), next_auction_position_x(0), 
                                 next_auction_position_y(0), other_robots_position_x(0), other_robots_position_y(0),
                                 number_of_completed_auctions(0), number_of_uncompleted_auctions(0), first_run(true),
-                                first_negotiation_run(true), robot_prefix_empty_param(false){
+                                first_negotiation_run(true), robot_prefix_empty_param(false), exploration_finished(true) {
     
     int robot_id = c.robot_id;
     bool robot_prefix_empty = c.robot_prefix_empty;
@@ -1494,6 +1494,9 @@ bool ExplorationPlanner::publish_negotiation_list(frontier_t negotiation_frontie
 
 bool ExplorationPlanner::sendToMulticast(std::string multi_cast_group, adhoc_communication::ExpFrontier frontier_to_send, std::string topic)
 {
+    if (exploration_finished == false) {
+        return false;
+    }
 //    ROS_INFO("SENDING frontier id: %ld    detected_by: %ld", frontier_to_send.id ,frontier_to_send.detected_by_robot);
     adhoc_communication::SendExpFrontier service_frontier; // create request of type any+
     

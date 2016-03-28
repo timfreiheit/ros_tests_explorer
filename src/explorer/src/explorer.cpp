@@ -230,7 +230,7 @@ using namespace explorer;
                 
         exploration->exploreDistanceFromHome = exploreDistanceFromHome;
         running = true;
-        exploration_finished = false;
+        setExplorationFinished(false);
 		while (exploration_finished == false || backToHome) {
                 if(Simulation == false) {
                         /*
@@ -1431,7 +1431,7 @@ using namespace explorer;
             
 		/*
 		 * Move the robot with the help of an action client. Goal positions are
-		 * transmitted to the robot and feedback is given about the actual
+		 * transmiftted to the robot and feedback is given about the actual
 		 * driving state of the robot.
 		 */
         if (!costmap2d_local->getRobotPose(robotPose)) {
@@ -1541,6 +1541,11 @@ using namespace explorer;
                 exploration->next_auction_position_y = robotPose.getOrigin().getY();
 		return true;
 	}
+
+    void Explorer::setExplorationFinished(bool b) {
+        exploration_finished = b;
+        exploration->exploration_finished = b;
+    }
 
 	bool Explorer::turn_robot(int seq) {
 		
