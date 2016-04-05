@@ -1409,7 +1409,7 @@ using namespace explorer;
 
 	bool Explorer::move_robot(int seq, double position_x, double position_y) {
 
-        if (calculatePlanDistance(home_point_x, home_point_y, position_x, position_y) > exploration->exploreDistanceFromHome
+        if (calculatePlanDistance(0, 0, true, position_x, position_y) > exploration->exploreDistanceFromHome
             && exploration->exploreDistanceFromHome > 0) {
             ROS_ERROR("cancel movement: travel distance to far");
             return false;
@@ -1473,7 +1473,7 @@ using namespace explorer;
             }
 
             recalculateCounter++;
-            if (recalculateCounter == 10 && exploration->exploreDistanceFromHome > 0) {
+            if (recalculateCounter == 30) {
                 recalculateCounter = 0;
                 // move_base can not calculate plan while running
                 ac.cancelGoal();
@@ -1482,7 +1482,7 @@ using namespace explorer;
                     || ac.getState() == actionlib::SimpleClientGoalState::ACTIVE) {
                     ros::Duration(0.5).sleep();
                 }
-                if (calculatePlanDistance(home_point_x, home_point_y, position_x, position_y) > exploration->exploreDistanceFromHome) {
+                if (calculatePlanDistance(home_point_x, home_point_y, true, position_x, position_y) > exploration->exploreDistanceFromHome) {
                     ROS_ERROR("cancel movement: travel distance to far");
                     return false;
                 }
@@ -1627,7 +1627,7 @@ using namespace explorer;
 
     void Explorer::storeUnreachableFrontier(double x, double y, int detected_by_robot, std::string detected_by_robot_str, int id) {
         exploration->storeUnreachableFrontier(x, y, detected_by_robot, detected_by_robot_str, id);
-        try {
+/*        try {
             for (int i = 0; i < exploration->frontiers.size(); i++) {
                 double diff_x = fabs(x - exploration->frontiers.at(i).x_coordinate);
                 double diff_y = fabs(y - exploration->frontiers.at(i).y_coordinate);
@@ -1636,7 +1636,7 @@ using namespace explorer;
                 // TODO improve
                 if (diff_x > 0.5 && diff_x <= 10 && diff_y > 0.5 && diff_y <= 10) {
 
-                    if (calculatePlanDistance(home_point_x, home_point_y, exploration->frontiers.at(i).x_coordinate, exploration->frontiers.at(i).y_coordinate) > exploration->exploreDistanceFromHome
+                    /*if (calculatePlanDistance(home_point_x, home_point_y, true, exploration->frontiers.at(i).x_coordinate, exploration->frontiers.at(i).y_coordinate) > exploration->exploreDistanceFromHome
                         && exploration->exploreDistanceFromHome > 0) {
                         exploration->storeUnreachableFrontier(exploration->frontiers.at(i).x_coordinate,
                                 exploration->frontiers.at(i).y_coordinate,
@@ -1673,21 +1673,24 @@ using namespace explorer;
             }
         } catch(...){
             ROS_ERROR("ERROR while checking plan");
-        }
+        }*/
     }
 
-    int Explorer::calculatePlanDistance(double startX, double startY, double goalX, double goalY) {
+    int Explorer::calculatePlanDistance(double startX, double startY, bool fromCurrentPlace, double goalX, double goalY) {
 
         ROS_INFO("[Explorer] calculatePlanDistance");
         nav_msgs::GetPlan plan;
 
-        geometry_msgs::PoseStamped start;
-        start.header.seq = home_point_message++;
-        start.header.stamp = ros::Time::now();
-        start.header.frame_id = move_base_frame;
-        start.pose.position.x = startX;
-        start.pose.position.y = startY;
-        plan.request.start = start;
+
+        if (fromCurrentPlace == false) {
+            geometry_msgs::PoseStamped start;
+            start.header.seq = home_point_message++;
+            start.header.stamp = ros::Time::now();
+            start.header.frame_id = move_base_frame;
+            start.pose.position.x = startX;
+            start.pose.position.y = startY;
+            plan.request.start = start;
+        }
 
         geometry_msgs::PoseStamped goal;
         goal.header.seq = home_point_message++;
@@ -1704,9 +1707,15 @@ using namespace explorer;
 
             int x = startX;
             int y = startY;
+
+            float xUnknown = startX;
+            float yUnknown = startY;
+            double distanceUnknown = -1;
+
+            int unknownCounter = 0;
             for (int i=0; i<size; i++) {
-                int x2 = plan.response.plan.poses[i].pose.position.x;
-                int y2 = plan.response.plan.poses[i].pose.position.y;
+                float x2 = plan.response.plan.poses[i].pose.position.x;
+                float y2 = plan.response.plan.poses[i].pose.position.y;
 
                 double diff_x = x - x2;
                 double diff_y = y - y2;
@@ -1716,10 +1725,41 @@ using namespace explorer;
 
                 distance = distance + distance2;
 
+                bool unknownSpace = exploration->isWorldPointInUnknownSpace(x2, y2);
+                if ((unknownSpace == true) || distanceUnknown > 0) {
+                    ROS_ERROR("Plan is in unkown space!!! x: %f, y: %f, distance: %f", x2, y2, distanceUnknown);
+                    if (distanceUnknown == -1) {
+                        distanceUnknown = 0;
+                    } else {
+                        diff_x = xUnknown - x2;
+                        diff_y = yUnknown - y2;
+                        distance2 = sqrt( (diff_x * diff_x) + (diff_y * diff_y) );
+                        distanceUnknown += distance2;
+                    }
+                    yUnknown = y2;
+                    xUnknown = x2;
+
+                    if (distanceUnknown > 1) {
+                        ROS_ERROR("!!!Plan is to long in unkonwn space!!! %f", distanceUnknown);
+                        return 99999;
+                    }/*
+                    unknownCounter++;
+                    if (unknownCounter > 10) {
+                        return 99999;
+                    }*/
+                    if (unknownSpace == false) {
+                        unknownCounter = 0;
+                        distanceUnknown = -1;
+                    }
+                } else {
+                    unknownCounter = 0;
+                    distanceUnknown = -1;
+                }
+
             }
 
             ROS_ERROR("[Explorer] calculated Distance: %f", distance);
-            return (int) distance;
+            return 0; //(int) distance;
         }            
         return -1;
     }

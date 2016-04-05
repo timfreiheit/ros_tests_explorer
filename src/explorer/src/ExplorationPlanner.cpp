@@ -5745,9 +5745,20 @@ bool ExplorationPlanner::isFree(int point) {
 }
 
 
-bool ExplorationPlanner::isPointInUnknownSpace(int x, int y) {
-    int point =  x + map_height_ * y;
-    return occupancy_grid_array_[point] == costmap_2d::NO_INFORMATION;
+bool ExplorationPlanner::isWorldPointInUnknownSpace(int x, int y) {
+    unsigned int mx, my, index;
+
+    mx = 0; 
+    my = 0;
+            
+    if(!costmap_global_ros_->getCostmap()->worldToMap(x, y, mx, my)){
+        ROS_ERROR("Cannot convert coordinates successfully.");
+        return false;
+    }
+
+    //index = costmap_ros_->getCostmap()->getIndex(mx, my);
+
+    return costmap_global_ros_->getCostmap()->getCost(mx, my) == costmap_2d::NO_INFORMATION;
 }
 
 inline bool ExplorationPlanner::isValid(int point) {
