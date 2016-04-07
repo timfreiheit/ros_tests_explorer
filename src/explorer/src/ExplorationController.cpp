@@ -30,6 +30,7 @@
 #include "Explorer.h"
 #include "Config.h"
 #include "Constants.h"
+#include "visualization_msgs/MarkerArray.h"
 
 using namespace explorationController;
 
@@ -51,6 +52,42 @@ void ExplorationController::explore() {
 
 void ExplorationController::registerAdHocCommunication() {
 	sub_control = nh_control.subscribe(c->adhocCommunicationTopicPrefix()+"/exp_control", 10000, &ExplorationController::controlCallback, this);
+    sub_my_position = nh_control.subscribe("map_merger/position_"+c->robot_name, 99999, &ExplorationController::robotPositionsCallback, this);
+}
+
+
+void ExplorationController::robotPositionsCallback(const visualization_msgs::MarkerArray::ConstPtr& msg) {
+    int size = msg->markers.size();
+    ROS_ERROR(" RECEIVED POSITION MESSAGE %d", size);
+    if ((size % 10) == 0) {
+
+        double distance = -1;
+
+        float old_x = 0;
+        float old_y = 0;
+
+        for (int i=0;i<size;i++) {
+            float x = msg->markers[i].pose.position.x;
+            float y = msg->markers[i].pose.position.y;
+            if (distance < 0) {
+                old_x = x;
+                old_y = y;
+                distance = 0;
+                continue;
+            }
+            double diff_x = x - old_x;
+            double diff_y = y - old_y;
+            old_x = x;
+            old_y = y;
+            double distance2 = sqrt( (diff_x * diff_x) + (diff_y * diff_y) );
+
+            distance = distance + distance2;
+
+        }
+
+        ROS_ERROR("Distance: %f",distance);
+
+    }
 }
 
 void ExplorationController::controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg) {

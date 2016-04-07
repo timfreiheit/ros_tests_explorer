@@ -21,6 +21,7 @@
 #include <Config.h>
 #include "Config.h"
 #include "Constants.h"
+#include "visualization_msgs/MarkerArray.h"
 //#include <dynamic_reconfigure/server.h>
 
 namespace explorationController {
@@ -35,10 +36,12 @@ namespace explorationController {
 
 			ros::NodeHandle nh_control;
 			ros::Subscriber sub_control;
+			ros::Subscriber sub_my_position;
 			int exploreDistanceFromHome;
 
 			void registerAdHocCommunication();
 			void controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg);
+			void robotPositionsCallback(const visualization_msgs::MarkerArray::ConstPtr& msg);
 	};
 
 }

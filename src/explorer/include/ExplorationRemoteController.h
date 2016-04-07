@@ -8,6 +8,9 @@
 #include "Config.h"
 #include "Constants.h"
 #include <adhoc_communication/SendExpControl.h>
+#include <adhoc_communication/MmListOfPoints.h>
+#include "visualization_msgs/MarkerArray.h"
+
 
 namespace explorationRemoteController {
 
@@ -15,10 +18,17 @@ namespace explorationRemoteController {
 		public:
 			ExplorationRemoteController(config::Config& c);
 			bool sendControlMessage(std::string target, adhoc_communication::ExpControl control_to_send);
+			void allPositionsCallback(const adhoc_communication::MmListOfPoints::ConstPtr& msg);
+			void robotPositionsCallback(const visualization_msgs::MarkerArray::ConstPtr& msg);
+			void run();
 		private:
 			config::Config* c;
-            ros::NodeHandle *nh_service;
+            ros::NodeHandle nh_service;
+			ros::Subscriber sub_robot_positions;
+			ros::Subscriber sub_all_positions;
             ros::ServiceClient ssendExpControl;
+
+			void registerCallbacks();
 	};
 
 }

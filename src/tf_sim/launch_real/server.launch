@@ -29,7 +29,7 @@
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <arg name="has_local_map" value="false"/>
         <arg name="max_rotation_robots" value="10"/>
-        <param name="exchange_position" value="false" />
+        <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
     </include>
 

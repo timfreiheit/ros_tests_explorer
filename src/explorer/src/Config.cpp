@@ -118,6 +118,7 @@ void Config::setUpRobotId() {
     		robot_name = robot_prefix;
     		ROS_INFO("robot_prefix: %s",robot_prefix.c_str());               
     		robot_id = atoi(robot_prefix.substr(7,1).c_str());
+            robot_name = robot_prefix.substr(1,7);
 		}
 		robot_id++;
 		robot_prefix_empty = false;

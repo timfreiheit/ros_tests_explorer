@@ -505,6 +505,7 @@ void MapMerger::callback_send_position(const ros::TimerEvent &e)
 
     pos_array_my.markers.push_back(m);
     my_pos_pub.publish(pos_array_my);
+    list_of_positions_publisher.publish(*positions);
 }catch(...) {
     ROS_ERROR("ERROR callback_send_position");
 }
