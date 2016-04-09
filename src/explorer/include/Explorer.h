@@ -83,6 +83,7 @@ class Explorer {
 
 		Explorer(config::Config & c, tf::TransformListener& tf);
 		void explore(int exploreDistanceFromHome);
+		bool navigateToNextFrontier(int frontier_selection);
 		void frontiers();
 		void map_info();
 		int global_costmap_size();

@@ -2795,7 +2795,6 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
 
             neighbours = getMapNeighbours(mx, my, 6);
             
-            ROS_INFO("Neighbours: %lu", neighbours.size());
             for (int j = 0; j < neighbours.size()/2; j++)
             {
 
@@ -2825,7 +2824,6 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
 //                ROS_INFO("Done");
             } 
 
-            ROS_INFO("TEMP: TEST");
             if(unknown_found == false || obstacle_found == true || freespace_found == false)
             {
 

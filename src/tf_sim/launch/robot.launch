@@ -44,7 +44,7 @@
         <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="robot_prefix" value="$(arg robot_prefix)" />
         <arg name="robot_local_map_frame" value="$(arg robot_name)/map" />
-        <arg name="output" value="$(arg output)" />
+        <arg name="output" value="log" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <param name="exchange_position" value="true" />

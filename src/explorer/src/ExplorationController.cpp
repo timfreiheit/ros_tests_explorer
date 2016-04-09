@@ -58,7 +58,7 @@ void ExplorationController::registerAdHocCommunication() {
 
 void ExplorationController::robotPositionsCallback(const visualization_msgs::MarkerArray::ConstPtr& msg) {
     int size = msg->markers.size();
-    ROS_ERROR(" RECEIVED POSITION MESSAGE %d", size);
+    ROS_ERROR_STREAM(c->robot_name << ": RECEIVED POSITION MESSAGE: " << size);
     if ((size % 10) == 0) {
 
         double distance = -1;
@@ -91,7 +91,7 @@ void ExplorationController::robotPositionsCallback(const visualization_msgs::Mar
 }
 
 void ExplorationController::controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg) {
-    ROS_ERROR("----------------  RECEIVED CONTROL MESSAGE ----------------------------");
+    ROS_ERROR_STREAM(c->robot_name << " RECEIVED CONTROL MESSAGE running: " << explorer->running);
     ROS_ERROR("----------------  STATUS: Running: %d ----------------------------", explorer->running);
     if (msg.get()->action == EXP_CONTROL_START) {
     	ROS_ERROR("----------------  MESSAGE: START EXPLORATION ---------------------------- distance: %d", msg.get()->exploreDistanceFromHome);

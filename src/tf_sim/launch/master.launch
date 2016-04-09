@@ -14,7 +14,6 @@
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="02:00:00:00:00:00" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
-            <arg name="output" value="log"/>
         </include>
     </group>
 
@@ -26,6 +25,7 @@
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="02:01:00:00:00:00" />
             <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
+            <arg name="output" value="log"/>
         </include>
     </group>
 
