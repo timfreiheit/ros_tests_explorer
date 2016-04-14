@@ -6,7 +6,6 @@
 
     <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
     <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
-        <arg name="rgb_processing" value="false" />
         <arg name="3d_sensor" value="kinect" />
         <arg name="rgb_processing" value="false" />
         <arg name="depth_registration" value="false" />
