@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <launch>
     <node name="stage" pkg ="stage_ros" type="stageros" args="$(find tf_sim)/worlds/world_Uni.world" />
-
+    <!--
+    <node name="stage" pkg ="stage_ros" type="stageros" args="$(find tf_sim)/worlds/world_coordinated.world" />
+-->
     <arg name="use_sim_time" default="true" />
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 

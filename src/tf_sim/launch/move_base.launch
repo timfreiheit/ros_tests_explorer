@@ -30,6 +30,8 @@
         <param name="observation_persistence" value="0.1" />
 
 
+        <param name="~recovery_behavior_enabled" value="false" />
+        <param name="recovery_behavior_enabled" value="false" />
 <!--
         <param name="local_costmap/robot_base_frame" value="$(arg robot_pref)/base_footprint" />
         <param name="local_costmap/global_frame" value="$(arg robot_pref)/odom" />

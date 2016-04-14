@@ -1709,8 +1709,8 @@ using namespace explorer;
 
             double distance = -1;
 
-            int x = startX;
-            int y = startY;
+            float x = startX;
+            float y = startY;
 
             float xUnknown = startX;
             float yUnknown = startY;
@@ -1718,8 +1718,26 @@ using namespace explorer;
 
             int unknownCounter = 0;
             for (int i=0; i<size; i++) {
+                
+                if (distance < 0) {
+                    distance = 0;
+                    x = plan.response.plan.poses[i].pose.position.x;
+                    y = plan.response.plan.poses[i].pose.position.y;
+                    continue;
+                }
+
                 float x2 = plan.response.plan.poses[i].pose.position.x;
                 float y2 = plan.response.plan.poses[i].pose.position.y;
+
+                // check the point in the middle to avoid error when a line crosses unknown space
+                float middleX = (x + x2) / 2;
+                float middleY = (y + y2) / 2;
+                bool unknownSpace = exploration->isWorldPointInUnknownSpace(middleX, middleY);
+
+                if (unknownSpace == true) {
+                    ROS_ERROR_STREAM("Middle in unknown Space x " << middleX << "y: " << middleY);
+                    unknownSpace = false;
+                }
 
                 double diff_x = x - x2;
                 double diff_y = y - y2;
@@ -1729,7 +1747,7 @@ using namespace explorer;
 
                 distance = distance + distance2;
 
-                bool unknownSpace = exploration->isWorldPointInUnknownSpace(x2, y2);
+                unknownSpace = unknownSpace || exploration->isWorldPointInUnknownSpace(x2, y2);
                 if ((unknownSpace == true) || distanceUnknown > 0) {
                     //ROS_ERROR("Plan is in unkown space!!! x: %f, y: %f, distance: %f", x2, y2, distanceUnknown);
                     if (distanceUnknown == -1) {
