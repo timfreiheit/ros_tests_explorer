@@ -49,6 +49,7 @@ using std::string;
 #include "adhoc_communication/ExpCluster.h"
 #include "adhoc_communication/CMgrDimensions.h"
 #include "adhoc_communication/CMgrRobotUpdate.h"
+#include "adhoc_communication/ExpControl.h"
 
 /* Custom SRV Types*/
 #include "adhoc_communication/ChangeMCMembership.h"
@@ -69,6 +70,7 @@ using std::string;
 #include "adhoc_communication/ShutDown.h"
 #include "adhoc_communication/BroadcastCMgrRobotUpdate.h"
 #include "adhoc_communication/BroadcastString.h"
+#include "adhoc_communication/SendExpControl.h"
 
 
 #include "nav_msgs/Odometry.h"
@@ -439,7 +441,7 @@ bool getRoute(routing_entry& r, std::string hostname)
 
 void socketSend(string network_string)
 {
-    sendto(raw_socket, network_string.data(), network_string.length(), 0, (struct sockaddr*) &socket_address, sizeof (socket_address));
+    int result = sendto(raw_socket, network_string.data(), network_string.length(), 0, (struct sockaddr*) &socket_address, sizeof (socket_address));
 
 #ifdef DELAY
 

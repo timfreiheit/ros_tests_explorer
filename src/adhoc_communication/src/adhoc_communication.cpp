@@ -512,6 +512,26 @@ bool sendAuction(adhoc_communication::SendExpAuction::Request &req, adhoc_commun
     return res.status;
 }
 
+bool sendExplorationControl(adhoc_communication::SendExpControl::Request &req, adhoc_communication::SendExpControl::Response & res)
+{
+#ifdef PERFORMANCE_LOGGING_SERVICE_CALLS
+    unsigned long time_call = getMillisecondsTime();
+#endif
+    /* Description:
+     * Service call to send Auction.
+     */
+
+    ROS_DEBUG("Service called to send ExplorationControl..");
+
+    string s_msg = getSerializedMessage(req.control);
+    res.status = sendPacket(req.dst_robot, s_msg, FRAME_DATA_TYPE_EXPLORATION_CONTROL, req.topic);
+
+#ifdef PERFORMANCE_LOGGING_SERVICE_CALLS
+    Logging::logServiceCalls("SendExpControl", time_call, getMillisecondsTime(), s_msg.size(), res.status);
+#endif
+    return res.status;
+}
+
 bool sendCluster(adhoc_communication::SendExpCluster::Request &req, adhoc_communication::SendExpCluster::Response & res)
 {
 #ifdef PERFORMANCE_LOGGING_SERVICE_CALLS
@@ -1107,6 +1127,7 @@ int main(int argc, char **argv)
     ros::ServiceServer sendFrontierS = n_pub->advertiseService(robot_prefix + node_prefix + "send_frontier", sendFrontier);
     ros::ServiceServer sendClusterS = n_pub->advertiseService(robot_prefix + node_prefix + "send_cluster", sendCluster);
     ros::ServiceServer sendAuctionS = n_pub->advertiseService(robot_prefix + node_prefix + "send_auction", sendAuction);
+    ros::ServiceServer sendControlS = n_pub->advertiseService(robot_prefix + node_prefix + "send_exp_control", sendExplorationControl);
     ros::ServiceServer sendBcastS = n_pub->advertiseService(robot_prefix + node_prefix + "broadcast_robot_update", sendBroadcastCMgrRobotUpdate);
     ros::ServiceServer sendBcastStringS = n_pub->advertiseService(robot_prefix + node_prefix + "broadcast_string", sendBroadcastString);
 
@@ -3128,6 +3149,13 @@ void publishPacket(Packet * p)
             else if (p->data_type_ == FRAME_DATA_TYPE_ROBOT_UPDATE)
             {
                 adhoc_communication::CMgrRobotUpdate r_up;
+                desializeObject((unsigned char*) payload.data(), payload.length(), &r_up);
+
+                publishMessage(r_up, p->topic_);
+            }
+            else if (p->data_type_ == FRAME_DATA_TYPE_EXPLORATION_CONTROL)
+            {
+                adhoc_communication::ExpControl r_up;
                 desializeObject((unsigned char*) payload.data(), payload.length(), &r_up);
 
                 publishMessage(r_up, p->topic_);

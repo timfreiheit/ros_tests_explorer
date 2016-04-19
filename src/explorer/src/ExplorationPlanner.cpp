@@ -48,7 +48,7 @@ template <typename T>
      return ss.str();
   }
 
-ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, std::string robot_name_parameter):
+ExplorationPlanner::ExplorationPlanner(config::Config& c):
 		costmap_ros_(0), occupancy_grid_array_(0), exploration_trans_array_(0), obstacle_trans_array_(
 				0), frontier_map_array_(0), is_goal_array_(0), map_width_(0), map_height_(
 				0), num_map_cells_(0), initialized_(false), last_mode_(
@@ -62,9 +62,11 @@ ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, st
                                 start_thr_auction(false), auction_id_number(1), next_auction_position_x(0), 
                                 next_auction_position_y(0), other_robots_position_x(0), other_robots_position_y(0),
                                 number_of_completed_auctions(0), number_of_uncompleted_auctions(0), first_run(true),
-                                first_negotiation_run(true), robot_prefix_empty_param(false){
+                                first_negotiation_run(true), robot_prefix_empty_param(false), exploration_finished(true) {
     
-    
+    int robot_id = c.robot_id;
+    bool robot_prefix_empty = c.robot_prefix_empty;
+    std::string robot_name_parameter = c.robot_name;
     trajectory_strategy = "euclidean";
     robot_prefix_empty_param = robot_prefix_empty;
 
@@ -87,6 +89,7 @@ ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, st
         robo_name = "";
         robot_str = robot_name_parameter;
     }
+    robo_name = c.adhocCommunicationTopicPrefix();
     std::string sendFrontier_msgs = robo_name +"/adhoc_communication/send_frontier";
     std::string sendAuction_msgs  = robo_name +"/adhoc_communication/send_auction";
     
@@ -1133,6 +1136,20 @@ bool ExplorationPlanner::storeFrontier(double x, double y, int detected_by_robot
 {
     frontier_t new_frontier;
     
+    // check if frontier is inside of the exploration bounds
+    if (exploreDistanceFromHome > 0) {
+        int diff_x = x - robot_home_x;
+        int diff_y = y - robot_home_y;
+        double distance = sqrt( (diff_x * diff_x) + (diff_y * diff_y) );
+
+        int distanceInt = (int) (distance + 0.5);
+        ROS_INFO("[Explorer] Distance: %d", distanceInt);
+        if (exploreDistanceFromHome < distanceInt) {
+            ROS_INFO("[Explorer] drop frontier");
+            return false;
+        }
+    }
+    
     if(robot_prefix_empty_param == true)
     {        
         ROS_DEBUG("Storing Frontier ID: %d   Robot: %s", id, detected_by_robot_str.c_str());
@@ -1160,7 +1177,7 @@ bool ExplorationPlanner::storeFrontier(double x, double y, int detected_by_robot
         {
            new_frontier.id = (robot_name * 10000) + frontier_id_count++; 
         }
-
+        
         new_frontier.detected_by_robot = detected_by_robot;
         new_frontier.x_coordinate = x;
         new_frontier.y_coordinate = y;
@@ -1477,6 +1494,9 @@ bool ExplorationPlanner::publish_negotiation_list(frontier_t negotiation_frontie
 
 bool ExplorationPlanner::sendToMulticast(std::string multi_cast_group, adhoc_communication::ExpFrontier frontier_to_send, std::string topic)
 {
+    if (exploration_finished == false) {
+        return false;
+    }
 //    ROS_INFO("SENDING frontier id: %ld    detected_by: %ld", frontier_to_send.id ,frontier_to_send.detected_by_robot);
     adhoc_communication::SendExpFrontier service_frontier; // create request of type any+
     
@@ -1880,6 +1900,7 @@ void ExplorationPlanner::positionCallback(const adhoc_communication::MmListOfPoi
 
 void ExplorationPlanner::auctionCallback(const adhoc_communication::ExpAuction::ConstPtr& msg)
 {
+    ROS_INFO("auctionCallback");
     auction_running = true;
     //ROS_ERROR("CALLING AUCTION CALLBACK!!!!!!!!!!!!");
     int robots_int_name;
@@ -2740,7 +2761,7 @@ void ExplorationPlanner::clearUnreachableFrontiers()
 
 void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_costmap)
 {
-//    ROS_INFO("Clear Seen");
+    ROS_INFO("Clear Seen");
     unsigned int mx, my, point;
     std::vector<int> neighbours, goals_to_clear;
        
@@ -2750,6 +2771,8 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
     
 //    ROS_INFO("Map origin  x: %f    y: %f", global_costmap->getCostmap()->getOriginX(), global_costmap->getCostmap()->getOriginY());
 //    ROS_INFO("Map size    x: %d    y: %d", global_costmap->getCostmap()->getSizeInCellsX(), global_costmap->getCostmap()->getSizeInCellsY());
+    int size = frontiers.size();
+    ROS_INFO("Frontiers: %d ", size);
     if(frontiers.size() > 1)
     {
         for(int i = 0; i < frontiers.size(); i++)
@@ -2772,7 +2795,6 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
 
             neighbours = getMapNeighbours(mx, my, 6);
             
-//            ROS_INFO("Neighbours: %lu", neighbours.size());
             for (int j = 0; j < neighbours.size()/2; j++)
             {
 
@@ -2833,6 +2855,7 @@ void ExplorationPlanner::clearSeenFrontiers(costmap_2d::Costmap2DROS *global_cos
 //            removeStoredFrontier(goals_to_clear.at(i)); 
 //        }
     }
+    ROS_INFO("end Clear Seen");
 }
 
 bool ExplorationPlanner::smartGoalBackoff(double x, double y, costmap_2d::Costmap2DROS *global_costmap, std::vector<double> *new_goal)
@@ -3205,7 +3228,7 @@ bool ExplorationPlanner::auctioning(std::vector<double> *final_goal, std::vector
     std::string numbers_of_operating_robots; 
     
     ROS_INFO("Robot %d starting an auction", robot_name);
-    
+
 //    if(first_run == true)
 //    {
 //        pub_auctioning_first.publish(auction_msg);
@@ -5141,24 +5164,21 @@ void ExplorationPlanner::visualize_Frontiers()
                         
             marker.color.a = 1.0;
             
-            if(frontiers.at(i).detected_by_robot == robot_name)
-            {                  
+            if(frontiers.at(i).detected_by_robot == robot_name) {                  
                 marker.color.r = 1.0;
                 marker.color.g = 0.0;
                 marker.color.b = 0.0;               
-            }
-            if(frontiers.at(i).detected_by_robot == 1)
-            {
+            } else if(frontiers.at(i).detected_by_robot == 1) {
                 marker.color.r = 0.0;
                 marker.color.g = 1.0;
                 marker.color.b = 0.0;
-            }  
-            if(frontiers.at(i).detected_by_robot == 2)
-            {
+            } else if(frontiers.at(i).detected_by_robot == 2) {
                 marker.color.r = 0.0;
                 marker.color.g = 0.0;
                 marker.color.b = 1.0;
-            }  
+            } else {
+                ROS_ERROR("FRONTIER_detected_by_robot \"%d\" me: \"%d\"", frontiers.at(i).detected_by_robot, robot_name);
+            }
             
             markerArray.markers.push_back(marker);              
         }
@@ -5720,6 +5740,23 @@ bool ExplorationPlanner::isFree(int point) {
 		ROS_ERROR("Point is not valid! Reason: negative number ");
 	}
 	return false;
+}
+
+
+bool ExplorationPlanner::isWorldPointInUnknownSpace(int x, int y) {
+    unsigned int mx, my, index;
+
+    mx = 0; 
+    my = 0;
+            
+    if(!costmap_global_ros_->getCostmap()->worldToMap(x, y, mx, my)){
+        ROS_ERROR("Cannot convert coordinates successfully.");
+        return false;
+    }
+
+    //index = costmap_ros_->getCostmap()->getIndex(mx, my);
+
+    return costmap_global_ros_->getCostmap()->getCost(mx, my) == costmap_2d::NO_INFORMATION;
 }
 
 inline bool ExplorationPlanner::isValid(int point) {

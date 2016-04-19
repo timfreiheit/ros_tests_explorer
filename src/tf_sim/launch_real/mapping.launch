@@ -5,10 +5,10 @@
     <arg name="log_path" />
     <arg name="use_sim_time" default="true" />
     <arg name="output" default="log" />
-    <arg name="xmax" default="10" />
-    <arg name="xmin" default="-10" />
-    <arg name="ymax" default="10" />
-    <arg name="ymin" default="-10" />
+    <arg name="xmax" default="20" />
+    <arg name="xmin" default="-20" />
+    <arg name="ymax" default="20" />
+    <arg name="ymin" default="-20" />
 
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 

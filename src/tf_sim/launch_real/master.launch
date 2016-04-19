@@ -6,16 +6,15 @@
 
     <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
     <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
+        <arg name="3d_sensor" value="kinect" />
         <arg name="rgb_processing" value="false" />
         <arg name="depth_registration" value="false" />
         <arg name="depth_processing" value="false" />
 
-        <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
-             Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 -->
+            <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
+                 Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 -->
         <arg name="scan_topic" value="/scan" />
     </include>
-
-    <arg name="sim_robot_macs" default="robot_0,02:01:00:00:00:00"/>
 
     <group>
         <remap from="odom" to="/odom"/>
@@ -26,10 +25,9 @@
         <remap from="base_footprint" to="/base_footprint"/>
         
         <include file="$(find tf_sim)/launch_real/robot.launch" >
-            <arg name="robot_name" value="robot_0"/>
+            <arg name="robot_name" value=""/>
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
             <arg name="mac" default="02:01:00:00:00:00" />
-            <arg name="sim_robot_macs" value="$(arg sim_robot_macs)"/>
         </include>
     </group>
 

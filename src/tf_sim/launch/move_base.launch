@@ -4,8 +4,12 @@
     <arg name="robot_pref" />
     <arg name="output" default="log" />
 
-    <node pkg="move_base" type="move_base" name="move_base" >
-    
+    <arg name="name" default="move_base" />
+        <param name="recovery_behaviors" value=""/>
+
+    <param name="navfn/allow_unknown" value="false"/>
+    <node pkg="move_base" type="move_base" name="$(arg name)" >
+   
             <rosparam file="$(find tf_sim)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
             <rosparam file="$(find tf_sim)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
             <rosparam file="$(find tf_sim)/config/local_costmap_params.yaml" command="load" />
@@ -24,6 +28,32 @@
         <param name="local_costmap/scan/clearing" value="true" />
         <param name="local_costmap/scan/marking" value="true" />
         <param name="observation_persistence" value="0.1" />
+
+
+        <param name="~recovery_behavior_enabled" value="false" />
+        <param name="recovery_behavior_enabled" value="false" />
+<!--
+        <param name="local_costmap/robot_base_frame" value="$(arg robot_pref)/base_footprint" />
+        <param name="local_costmap/global_frame" value="$(arg robot_pref)/odom" />
+        <param name="global_costmap/robot_base_frame" value="$(arg robot_pref)/base_footprint" />
+
+        <param name="global_costmap/global_frame" value="$(arg robot_pref)/map" />
+        <param name="global_costmap/map_topic" value="map_merger/global_map" />
+        <param name="local_costmap/observation_sources" value="scan" />
+        <param name="local_costmap/scan/topic" value="base_scan" />
+        <param name="local_costmap/scan/data_type" value="LaserScan" />
+        <param name="local_costmap/map_topic" value="map_merger/global_map" />
+        <param name="local_costmap/scan/clearing" value="true" />
+        <param name="local_costmap/scan/marking" value="true" />
+        <param name="observation_persistence" value="0.1" />
+
+
+        <rosparam file="$(find tf_sim)/launch/config/common_costmap.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find tf_sim)/launch/config/common_costmap.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find tf_sim)/launch/config/navigation.yaml"     command="load" />
+        <rosparam file="$(find tf_sim)/launch/config/local_costmap.yaml"  command="load" />
+        <rosparam file="$(find tf_sim)/launch/config/global_costmap.yaml" command="load" />
+-->
 <!--
         <rosparam file="$(find tf_sim)/launch/common_costmap.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find tf_sim)/launch/common_costmap.yaml" command="load" ns="local_costmap" />
@@ -31,6 +61,7 @@
         <rosparam file="$(find tf_sim)/launch/local_costmap.yaml"  command="load" />
         <rosparam file="$(find tf_sim)/launch/global_costmap.yaml" command="load" />
 -->
+
         <remap from="$(arg robot_pref)$(arg robot_pref)/map" to="$(arg robot_pref)/map" />
     </node>
 

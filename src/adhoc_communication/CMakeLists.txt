@@ -63,6 +63,7 @@ find_package(catkin REQUIRED COMPONENTS
    RecvString.msg
    CMgrDimensions.msg
    CMgrRobotUpdate.msg
+   ExpControl.msg
  )
 
 
@@ -88,6 +89,7 @@ find_package(catkin REQUIRED COMPONENTS
    ShutDown.srv
    BroadcastCMgrRobotUpdate.srv
    BroadcastString.srv
+   SendExpControl.srv
  )
 
 ## Generate actions in the 'action' folder

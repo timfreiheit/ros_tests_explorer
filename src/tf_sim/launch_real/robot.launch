@@ -17,7 +17,7 @@
         <arg name="interface" value="$(arg interface)" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
         <arg name="mac" value="$(arg mac)" />
-        <arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />
+        <!--<arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />-->
         <arg name="output" value="screen" />
     </include>
     <!--
@@ -68,10 +68,10 @@
     <param name="resampleThreshold" value="0.5"/>
     <param name="particles" value="10"/>
   
-    <param name="xmin" value="-10.0"/>
-    <param name="ymin" value="-10.0"/>
-    <param name="xmax" value="10.0"/>
-    <param name="ymax" value="10.0"/>
+    <param name="xmin" value="-60.0"/>
+    <param name="ymin" value="-60.0"/>
+    <param name="xmax" value="60.0"/>
+    <param name="ymax" value="60.0"/>
 
     <param name="delta" value="0.05"/>
     <param name="llsamplerange" value="0.01"/>
@@ -99,7 +99,7 @@
 
         <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
-        <rosparam file="$(find turtlebot_navigation)/param/base_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
 
 
@@ -126,6 +126,7 @@
         <arg name="output" value="screen" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="max_rotation_robots" value="10"/>
         <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
     </include>
@@ -169,7 +170,7 @@
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
 
-        <arg name="frontier_selection" value="1" />
+        <arg name="frontier_selection" value="4" />
     </include>
 
 </launch>

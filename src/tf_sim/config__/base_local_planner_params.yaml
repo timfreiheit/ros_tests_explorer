@@ -37,6 +37,7 @@ TrajectoryPlannerROS:
   path_distance_bias: 0.6
   occdist_scale: 0.01
   heading_lookahead: 0.325
+  xy_goal_tolerance: 0.3
 
   #We'll use the Dynamic Window Approach to control instead of Trajectory Rollout for this example
   dwa: true

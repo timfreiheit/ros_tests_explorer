@@ -7,9 +7,12 @@
     <arg name="use_sim_time" default="false" />
     <arg name="output" default="log" />
 	<arg name="position_local_robot_topic" default="odom" />
+	<arg name="max_rotation_robots" default="5"/>
+	<arg name="has_local_map" default="true"/>
 
+	<arg name="launch_prefix" default=""/>
   
-	<node pkg="map_merger" type="map_merger" name="map_merger" output="screen"   >
+	<node pkg="map_merger" type="map_merger" name="map_merger" output="$(arg output)" respawn="true" launch-prefix="$(arg launch_prefix)" >
    		<param name="log_path" value="$(arg log_path)" />
 		<param name="robot_name" value="$(arg robot_name)" />
 		<param name="robot_prefix" value="$(arg robot_prefix)" />
@@ -21,11 +24,13 @@
 		<param name="seconds_pub_timer" value="6" />
 		<param name="seconds_recompute_transform" value="25" />
 		<param name="seconds_send_position" value="1" />
+		<param name="max_rotation_robots" value="$(arg max_rotation_robots)"/> 
 		<param name="position_other_robots_topic" value="position_other_robots"/>       
     	<param name="split_size" value="2048" />
     	<param name="splitted" value="true" />
     	<param name="local_map_topic" value="$(arg robot_prefix)/map" />
     	<param name="meta_topic_over_network" value="$(arg robot_prefix)/map_meta" />
     	<param name="local_map_metadata_topic" value="$(arg robot_prefix)/map_metadata" />
+    	<param name="has_local_map" value="$(arg has_local_map)"/>
 	</node>  
 </launch>
