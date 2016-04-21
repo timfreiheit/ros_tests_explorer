@@ -39,6 +39,10 @@ namespace explorationController {
 			ros::Subscriber sub_my_position;
 			int exploreDistanceFromHome;
 
+			/**
+			 * prints the current exploration status to the console
+			 */
+			void printStatus();
 			void registerAdHocCommunication();
 			void controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg);
 			void robotPositionsCallback(const visualization_msgs::MarkerArray::ConstPtr& msg);

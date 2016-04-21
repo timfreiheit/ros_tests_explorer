@@ -88,6 +88,12 @@ void ExplorationController::robotPositionsCallback(const visualization_msgs::Mar
         ROS_ERROR("Distance: %f",distance);
 
     }
+    printStatus();
+}
+
+void ExplorationController::printStatus() {
+    ROS_ERROR_STREAM("Exploration running: " << explorer->running);
+    ROS_ERROR_STREAM("Frontiers: " << explorer->exploration->frontiers.size());
 }
 
 void ExplorationController::controlCallback(const adhoc_communication::ExpControl::ConstPtr& msg) {
