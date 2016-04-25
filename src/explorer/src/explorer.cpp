@@ -1413,8 +1413,10 @@ using namespace explorer;
 
 	bool Explorer::move_robot(int seq, double position_x, double position_y) {
 
-        if (calculatePlanDistance(0, 0, true, position_x, position_y) > exploration->exploreDistanceFromHome
-            && exploration->exploreDistanceFromHome > 0) {
+        int distance = calculatePlanDistance(0, 0, true, position_x, position_y);
+        if ((distance > exploration->exploreDistanceFromHome
+            && exploration->exploreDistanceFromHome > 0)
+            || distance > 10000) {
             ROS_ERROR("cancel movement: travel distance to far");
             return false;
         }
@@ -1463,7 +1465,7 @@ using namespace explorer;
 
 		ac.sendGoal(goal_msgs);
          
-         int recalculateCounter = 0;
+        int recalculateCounter = 0;
 
         //ac.waitForResult(ros::Duration(20)); EDIT Peter: Test if it also works with smaller value!
         ac.waitForResult(ros::Duration(waitForResult)); //here Parameter!
