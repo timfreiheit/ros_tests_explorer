@@ -1,7 +1,7 @@
 max_obstacle_height: 0.60  # assume something like an arm is mounted on top of the robot
 obstacle_range: 3.9
 raytrace_range: 3.9
-robot_radius: 0.18
+robot_radius: 0.3
 inflation_radius: 0.50
 observation_sources: scan
 
