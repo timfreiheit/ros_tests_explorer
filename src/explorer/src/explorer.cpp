@@ -271,9 +271,9 @@ using namespace explorer;
 
                             if (exploration->frontiers.size() == 0 || backToHome) {
                                 navigateHome();
-                                setExplorationFinished(true);
+                                exploration_finished = true;
                                 backToHome = false;
-                                break;
+                                continue;
                             }
 
                             /*
@@ -1301,8 +1301,7 @@ using namespace explorer;
 //                                {
                                     completed_navigation = navigateHome();
                                     
-                                    setExplorationFinished(true);
-                                    backToHome = false;
+                                    exploration_finished = true;
 //                                }else
 //                                {
 //                                    ROS_INFO("No Goal determined on GLOBAL COSTMAP for the %d time. Still wait ...", global_iterations_counter);
@@ -1378,7 +1377,6 @@ using namespace explorer;
                 break;
             }                                       
         }
-        backToHome = false;
         return completed_navigation;
     }
 
