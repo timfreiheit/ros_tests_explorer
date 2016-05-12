@@ -82,8 +82,8 @@ floorplan
 
 #Add the robots
 # pose [x y z rotation]
-robot( pose [ 0 -11 0 135 ] name "robot_0" color "yellow")
-robot( pose [ 36 4 0 135 ] name "robot_1" color "blue")
+robot( pose [ -1 -11 0 45 ] name "robot_0" color "yellow")
+robot( pose [ 1 -11 0 45 ] name "robot_1" color "blue")
 #robot( pose [ 2 -1 0 1 ] name "robot_2" color "orange")
 #robot( pose [ 2 -3 0 45 ] name "robot_3" color "green")
 #robot( pose [ -18 -29.0 0 45 ] name "robot_4" color "red")
