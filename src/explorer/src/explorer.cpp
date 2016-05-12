@@ -201,8 +201,9 @@ using namespace explorer;
                
                 exploration->setRobotConfig(robot_id, robot_home_position_x, robot_home_position_y, move_base_frame);
                 
-		ROS_INFO("                                             ");
-		ROS_INFO("************* INITIALIZING DONE *************");
+		ROS_ERROR("                                             ");
+		ROS_ERROR("************* INITIALIZING DONE *************");
+        ROS_ERROR("                                             ");
                 
 	}
 
