@@ -50,7 +50,6 @@
         <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
         <arg name="max_rotation_robots" value="360"/>
-        <arg name="launch_prefix" value="gdb -ex run --args"/>
     </include>
     <include file="$(find explorer)/launch/exploration.launch">
         <arg name="robot_name" value="$(arg robot_name)" />
@@ -75,6 +74,5 @@
 
         <arg name="frontier_selection" value="1" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
-        <arg name="launch_prefix" value="gdb -ex run --args"/>
     </include>
 </launch>
