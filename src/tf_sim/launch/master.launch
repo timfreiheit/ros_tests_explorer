@@ -68,5 +68,5 @@
 
 </group>
 -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tf_sim)/stage.rviz" /> 
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tf_sim)/stage.rviz" respawn="true"/> 
 </launch>

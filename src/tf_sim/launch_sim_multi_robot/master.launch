@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 
-    <node name="stage" pkg ="stage_ros" type="stageros" args="$(find tf_sim)/worlds/world_Uni.world" />
+    <node name="stage" pkg ="stage_ros" type="stageros" args="$(find tf_sim)/worlds/world_Uni.world"/>
 
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find tf_sim)/stage.rviz" /> 
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find tf_sim)/stage.rviz" respawn="true" /> 
 
 
     <arg name="use_sim_time" default="true" />

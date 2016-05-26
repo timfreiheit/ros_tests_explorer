@@ -49,7 +49,7 @@
     <param name="odom_frame" value="odom"/>
     <param name="map_update_interval" value="1.0"/>
     <param name="maxUrange" value="3.9"/>
-    <param name="maxRange" value="15.0"/>
+    <param name="maxRange" value="8.0"/>
     <param name="sigma" value="0.01"/>
     <param name="kernelSize" value="1"/>
     <param name="lstep" value="0.01"/>
@@ -68,10 +68,10 @@
     <param name="resampleThreshold" value="0.5"/>
     <param name="particles" value="10"/>
   
-    <param name="xmin" value="-60.0"/>
-    <param name="ymin" value="-60.0"/>
-    <param name="xmax" value="60.0"/>
-    <param name="ymax" value="60.0"/>
+    <param name="xmin" value="-30.0"/>
+    <param name="ymin" value="-30.0"/>
+    <param name="xmax" value="30.0"/>
+    <param name="ymax" value="30.0"/>
 
     <param name="delta" value="0.05"/>
     <param name="llsamplerange" value="0.01"/>
@@ -101,9 +101,7 @@
         <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
-
-        <param name="~recovery_behavior_enabled" value="false" />
-        <param name="recovery_behavior_enabled" value="false" />
+        
 <!--   
     <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />
