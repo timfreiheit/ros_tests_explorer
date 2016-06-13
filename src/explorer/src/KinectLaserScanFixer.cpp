@@ -27,7 +27,7 @@ bool isNaN (float i) { return i != i; }
 
 void KinectLaserScanFixer::scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
 
-    std::cout << " get scan topic";
+    ROS_ERROR(" get scan topic");
 
     sensor_msgs::LaserScan scan;
     scan.header = msg->header;
@@ -41,7 +41,7 @@ void KinectLaserScanFixer::scanCallback(const sensor_msgs::LaserScan::ConstPtr& 
 
     std::replace_if (scan.ranges.begin(), scan.ranges.end(), isNaN, (float) 15);
     std::replace_if (scan.intensities.begin(), scan.intensities.end(), isNaN, (float) 15);
-    
+
     publish_scan.publish(scan);
 }
 
