@@ -77,20 +77,20 @@ floorplan
 ( 
   name "broun"
   #bitmap "../../tf_maps/maps/test_map_border.pgm" #<------------EDIT MAP FILE HERE
-  bitmap "../../tf_maps/maps/office.pgm" #<------------EDIT MAP FILE HERE
+  bitmap "../../tf_maps/maps/office_2.pgm" #<------------EDIT MAP FILE HERE
   #bitmap "../../tf_maps/maps/drawn_map.pgm" #<------------EDIT MAP FILE HERE
-  size [40 65.6 1]
+  size [20 45.6 1]
 )
 
 #Add the robots
 # pose [x y z rotation]
-robot( pose [ 2 2 0 90 ] name "robot_0" color "yellow")
-robot( pose [ 2 -2 0 1 ] name "robot_1" color "blue")
+robot( pose [ -1 2 0 90 ] name "robot_0" color "yellow")
+#robot( pose [ 2 -2 0 1 ] name "robot_1" color "blue")
 #robot( pose [ 2 -1 0 1 ] name "robot_2" color "orange")
 #robot( pose [ 2 -3 0 45 ] name "robot_3" color "green")
 #robot( pose [ -18 -29.0 0 45 ] name "robot_4" color "red")
 #robot( pose [ -17 -29.0 0 45 ] name "robot_5" color "cyan")
 #robot( pose [ -19 -30.0 0 45 ] name "robot_6" color "magenta")
 #robot( pose [ -18 -30.0 0 45 ] name "robot_7" color "pink")
-#robot( pose [ -17 -30.0 0 45 ] name "robot_8" color "purple")
+robot( pose [ -17 -30.0 0 45 ] name "robot_8" color "purple")
 

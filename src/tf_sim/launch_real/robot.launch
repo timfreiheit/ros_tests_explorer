@@ -42,6 +42,9 @@
   <!-- ********** START THE GMAPPING NODE ********** -->
   <!-- ******************************************************************************* -->
 
+    <node pkg="explorer" type="kinectLaserScanFixer" name="kinectLaserScanFixer" output="screen" respawn="true">
+    </node>
+
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
 
     <param name="base_frame" value="base_footprint"/>
@@ -78,6 +81,9 @@
     <param name="llsamplestep" value="0.01"/>
     <param name="lasamplerange" value="0.005"/>
     <param name="lasamplestep" value="0.005"/>
+
+    <remap from="scan" to="scan_fix" />
+    
   </node>
 
   <!-- ******************************************************************************* -->
