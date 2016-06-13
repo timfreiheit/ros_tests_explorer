@@ -42,9 +42,6 @@
   <!-- ********** START THE GMAPPING NODE ********** -->
   <!-- ******************************************************************************* -->
 
-    <node pkg="explorer" type="kinectLaserScanFixer" name="kinectLaserScanFixer" output="screen" respawn="true">
-    </node>
-
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
 
     <param name="base_frame" value="base_footprint"/>

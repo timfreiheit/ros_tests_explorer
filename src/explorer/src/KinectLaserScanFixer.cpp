@@ -14,6 +14,8 @@
 
 using namespace kinectLaserScanFixer;
 
+// does not fix the problem !!!
+
 void KinectLaserScanFixer::run() {
     registerCallbacks();
 }
