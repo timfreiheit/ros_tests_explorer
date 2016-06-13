@@ -27,8 +27,6 @@ bool isNaN (float i) { return i != i; }
 
 void KinectLaserScanFixer::scanCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
 
-    ROS_ERROR(" get scan topic");
-
     sensor_msgs::LaserScan scan;
     scan.header = msg->header;
     scan.angle_min = msg->angle_min;
@@ -57,7 +55,7 @@ int main(int argc, char **argv) {
 
 	kinectLaserScanFixer::KinectLaserScanFixer fixer;
 
-    fixer.run();
+    boost::thread thr_map(boost::bind(&KinectLaserScanFixer::run, &fixer));
 
     while (ros::ok()) {
         ros::spinOnce();
