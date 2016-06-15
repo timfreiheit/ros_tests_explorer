@@ -25,8 +25,8 @@
         <param name="delta" value="0.05"/>
         <param name="transform_publish_period " value="1.00" />
         <param name="particles" value="5" />
-        <param name="maxRange" value="60" />
-        <param name="maxUrange" value="59.9" />
+        <param name="maxRange" value="30" />
+        <param name="maxUrange" value="20" />
         <param name="temporalUpdate" value="2.0" />
 
         <remap from="scan" to="base_scan" />
