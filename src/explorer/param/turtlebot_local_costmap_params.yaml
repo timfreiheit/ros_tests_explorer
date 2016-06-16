@@ -1,5 +1,5 @@
 local_costmap:
-   global_frame: /odom
+   global_frame: /map
    robot_base_frame: /base_footprint
    update_frequency: 1.0
    publish_frequency: 1.0
@@ -9,4 +9,4 @@ local_costmap:
    height: 8.0
    resolution: 0.02
    transform_tolerance: 0.5
-   track_unknown_space: true
+   track_unknown_space: truest
