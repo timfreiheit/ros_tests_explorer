@@ -86,24 +86,31 @@
     
   </node>
 
-  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml">
-        <arg name="custom_param_file" value="$(find tf_sim)/launch_real/params/costmap_common_params.yaml"/>
-         <arg name="global_frame_id" value="map_merger/global_map"/>
-  </include>
-
   <!-- ******************************************************************************* -->
   <!-- ********** START MOVE BASE ********** -->
   <!-- ******************************************************************************* -->
-  <!--<include file="$(find turtlebot_navigation)/launch/includes/velocity_smoother.launch.xml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/velocity_smoother.launch.xml"/>
   <include file="$(find turtlebot_navigation)/launch/includes/safety_controller.launch.xml"/>
 
     <arg name="odom_topic" default="odom" />
 
     <node pkg="move_base" type="move_base" respawn="false" name="move_base">
 
+        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />   
+    <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />   
+    <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/global_planner_params.yaml" command="load" />
+<rosparam file="$(find turtlebot_navigation)/param/navfn_global_planner_params.yaml" command="load" />
+
+        <!--
+        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />-->
+
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
--->
 
         <!--<rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />-->
 <!--
@@ -111,34 +118,24 @@
         <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />-->
-        
-   <!--
+
+   
         <rosparam file="$(find explorer)/param/turtlebot_local_costmap_params.yaml" command="load" />
-        <rosparam file="$(find explorer)/param/turtlebot_global_costmap_params.yaml" command="load" />-->
+        <rosparam file="$(find explorer)/param/turtlebot_global_costmap_params.yaml" command="load" />
 
     <!--<rosparam file="$(find explorer)/param/base_local_planner_params.yaml" command="load" />-->
-   <!--     <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
-        <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
--->
-
-<!--
-    <rosparam file="$(find explorer)/param/base_local_planner_params.yaml" command="load" />
-    <rosparam file="$(find explorer)/param/turtlebot_local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find explorer)/param/turtlebot_global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
+    <!--
+        <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
+        <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />-->
 
         <param name="global_costmap/map_topic" value="map_merger/global_map" />
         <param name="local_costmap/map_topic" value="map_merger/global_map" />
 
-
-        <param name="~recovery_behavior_enabled" value="true" />
-        <param name="recovery_behavior_enabled" value="true" />
-
+<!-- -->
         <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
         <remap from="odom" to="$(arg odom_topic)"/>
 
-   <remap from="cmd_vel" to="cmd_vel_mux/input/navi_raw"/> 
-    </node> -->
+    </node>
 
     <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
         <arg name="robot_name" value="$(arg robot_name)" />
