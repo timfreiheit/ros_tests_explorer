@@ -4,7 +4,9 @@
     <arg name="use_sim_time" default="false" />
     <param name="use_sim_time"  value="$(arg use_sim_time)"/>
 
-    <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+    <include file="$(find turtlebot_bringup)/launch/minimal.launch">
+        <arg name="3d_sensor" value="kinect" />
+    </include>
     <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
         <arg name="3d_sensor" value="kinect" />
         <arg name="rgb_processing" value="false" />
