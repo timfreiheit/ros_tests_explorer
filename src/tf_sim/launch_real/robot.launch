@@ -103,6 +103,9 @@
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
 
+
+        <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
 <!--
         <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
