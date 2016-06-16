@@ -10,4 +10,3 @@ local_costmap:
    resolution: 0.02
    transform_tolerance: 0.5
    track_unknown_space: true
-   unknown_cost_value: 255
