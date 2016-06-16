@@ -83,8 +83,6 @@
     <param name="llsamplestep" value="0.01"/>
     <param name="lasamplerange" value="0.005"/>
     <param name="lasamplestep" value="0.005"/>
-
-    <remap from="scan" to="scan_fix" />
     
   </node>
 
@@ -104,24 +102,26 @@
 
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
-
+<!--
         <rosparam file="$(find turtlebot_navigation)/param/local_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/global_costmap_params.yaml" command="load" />
         <rosparam file="$(find turtlebot_navigation)/param/dwa_local_planner_params.yaml" command="load" />
-        <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
+        <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />-->
         
-<!--   
+  
     <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find explorer)/param/turtlebot_local_costmap_params.yaml" command="load" />
     <rosparam file="$(find explorer)/param/turtlebot_global_costmap_params.yaml" command="load" />
     <rosparam file="$(find explorer)/param/base_local_planner_params.yaml" command="load" />
--->
+
+
         <param name="global_costmap/map_topic" value="map_merger/global_map" />
-        <param name="local_costmap/map_topic" value="map_merger/global_map" />
+<!--        <param name="local_costmap/map_topic" value="map_merger/global_map" />
 
         <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
         <remap from="odom" to="$(arg odom_topic)"/>
+    -->
 
 <!--    <remap from="cmd_vel" to="cmd_vel_mux/input/navi_raw"/> -->
     </node>
