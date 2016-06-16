@@ -134,12 +134,10 @@
         <param name="~recovery_behavior_enabled" value="true" />
         <param name="recovery_behavior_enabled" value="true" />
 
-<!-- 
         <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
         <remap from="odom" to="$(arg odom_topic)"/>
 
-
-<!--    <remap from="cmd_vel" to="cmd_vel_mux/input/navi_raw"/> 
+   <remap from="cmd_vel" to="cmd_vel_mux/input/navi_raw"/> 
     </node> -->
 
     <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
