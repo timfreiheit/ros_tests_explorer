@@ -27,9 +27,7 @@
         <remap from="base_footprint" to="/base_footprint"/>
         
         <include file="$(find tf_sim)/launch_real/robot.launch" >
-            <arg name="robot_name" value=""/>
             <args name="use_sim_time" value="$(arg use_sim_time)"/>
-            <!--<arg name="mac" default="02:01:00:00:00:00" />-->
         </include>
     </group>
 

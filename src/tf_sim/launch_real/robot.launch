@@ -2,7 +2,6 @@
 <launch>
 	
     <arg name="use_sim_time" default="false" />
-    <arg name="robot_name" default="robot_x"/>
     <arg name="interface" default="wlan0" />
 
     <!--
@@ -13,34 +12,13 @@
 
 	<include file="$(find adhoc_communication)/launch/adhoc_communication.launch">
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
-        <!--<arg name="robot_name" value="$(arg robot_name)" />-->
-	    <!--<arg name="robot_prefix" value="$(arg robot_prefix)" />-->
         <arg name="interface" value="$(arg interface)" />
         <arg name="use_sim_time" value="$(arg use_sim_time)" />
-        <!--<arg name="mac" value="$(arg mac)" />-->
-        <!--<arg name="sim_robot_macs" value="$(arg sim_robot_macs)" />-->
         <arg name="output" value="screen" />
     </include>
     
-    <!--
-    <include file="$(find tf_sim)/launch_real/move_base.launch">
-        <arg name="robot" value="$(arg robot_name" />
-        <arg name="output" value="log" />
-    </include>-->
-    <!--<include file="$(find tf_sim)/launch_real/mapping.launch">
-        <arg name="robot" value="$(arg robot_name)" />
-	    <arg name="robot_local_map_frame" value="map" />
-        <arg name="output" value="log" />
-        <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
-        <arg name="use_sim_time" value="$(arg use_sim_time)" />
-        <arg name="xmax" value="35" />
-        <arg name="xmin" value="-35" />
-        <arg name="ymax" value="35" />
-        <arg name="ymin" value="-35" />
-    </include>-->
-    
 
-     <!-- ******************************************************************************* -->
+  <!-- ******************************************************************************* -->
   <!-- ********** START THE GMAPPING NODE ********** -->
   <!-- ******************************************************************************* -->
 
@@ -126,8 +104,6 @@
     </node>
 
     <include file="$(find map_merger)/launch/map_merger.launch" output="screen">
-        <arg name="robot_name" value="$(arg robot_name)" />
-        <arg name="robot_prefix" value="" />
         <arg name="robot_local_map_frame" value="map" />
         <arg name="output" value="screen" />
         <arg name="log_path" value="logs/15-11-20/14-06-42/1" />
@@ -136,13 +112,6 @@
         <param name="exchange_position" value="true" />
         <param name="seconds_recompute_transform" value="25" />
     </include>
-
-<!--
-    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />-->
-    <!--
-    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />-->
 
     <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
@@ -165,14 +134,7 @@
          * 6 ... Cluster frontiers, then navigate to random cluster
          *       (with and without negotiation)
          -->
-
-<!--
-        <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="global_costmap" />
-        <rosparam file="$(find explorer)/param/turtlebot_costmap_common_params.yaml" command="load" ns="local_costmap" />-->
-        <!--
-        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
-        <rosparam file="$(find turtlebot_navigation)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />-->
-
+         
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
         <rosparam file="$(find tf_sim)/launch_real/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
 
